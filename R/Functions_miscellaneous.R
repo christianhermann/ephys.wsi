@@ -8,14 +8,16 @@
 #' @examples
 check_packages <- function(pkg, libpath) {
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(new.pkg))
+  if (length(new.pkg)) {
     # install.packages(new.pkg, dependencies = TRUE,repos = "http://cran.us.r-project.org")
-    if(dir.exists("U://Installationsprogramme//R//miniCRAN"))
-      install.packages(new.pkg, dependencies = TRUE,repos = paste0("file:///","U://Installationsprogramme//R//miniCRAN"), lib = libpath)
-  if(!dir.exists("U://Installationsprogramme//R//miniCRAN")){
-    print("Choose miniCRAN directory: most likely in U://Installationsprogramme//R//miniCRAN")
-    install.packages(new.pkg, dependencies = TRUE,repos = paste0("file:///",choose.dir()), lib = libpath)
+    if (dir.exists("U://Installationsprogramme//R//miniCRAN")) {
+      install.packages(new.pkg, dependencies = TRUE, repos = paste0("file:///", "U://Installationsprogramme//R//miniCRAN"), lib = libpath)
     }
+  }
+  if (!dir.exists("U://Installationsprogramme//R//miniCRAN")) {
+    print("Choose miniCRAN directory: most likely in U://Installationsprogramme//R//miniCRAN")
+    install.packages(new.pkg, dependencies = TRUE, repos = paste0("file:///", choose.dir()), lib = libpath)
+  }
   sapply(pkg, require, character.only = TRUE)
 }
 
@@ -35,15 +37,16 @@ import_excel_Data <- function(name) {
       "Import Summary",
       type = "open",
       filter = list(
-        "Excel sheets" =  list(patterns = c("*.xlsx", "*.xls")),
+        "Excel sheets" = list(patterns = c("*.xlsx", "*.xls")),
         "All files" = list(patterns = c("*"))
       )
     )
   sheet_names <- getSheetNames(dir_summary)
 
   excel_data <-
-    map(sheet_names, function(sheet)
-      excel_data <- read.xlsx(dir_summary, sheet = sheet))
+    map(sheet_names, function(sheet) {
+      excel_data <- read.xlsx(dir_summary, sheet = sheet)
+    })
 
   excel_data <-
     map(excel_data, function(x) {
@@ -55,8 +58,9 @@ import_excel_Data <- function(name) {
 
   sheet_names <-
     map_chr(sheet_names, function(sheet) {
-      if (str_ends(sheet, " "))
+      if (str_ends(sheet, " ")) {
         return(stri_replace_last_fixed(sheet, " ", ""))
+      }
       return(sheet)
     })
   names(excel_data) <- sheet_names
@@ -78,7 +82,7 @@ import_excel_Data <- function(name) {
 #'
 #' @examples data <- import_asc_Data("filepath.asc", skips = 5)
 import_asc_Data <- function(directory, skips) {
-  return(vroom(directory,",",TRUE,  cols(.default = col_double()),skip = skips,  .name_repair = make.unique))
+  return(vroom(directory, ",", TRUE, cols(.default = col_double()), skip = skips, .name_repair = make.unique))
 }
 
 
@@ -94,7 +98,6 @@ read_asc_Length <- function(directory) {
   tmp <- read_file(directory)
   tmp <- str_replace(tmp, "\n\r", "")
   return(str_count(tmp, "\n"))
-
 }
 
 #' Reads iterative through an .asc file until a string containing the header_column is found.
@@ -127,10 +130,11 @@ find_header_row <- function(directory, header_column) {
 #' @export
 #'
 #' @examples tbl <- tibble("Test" = 3, "Random" = 2)
-#' rename_column(tbl, "Test","NewName")
+#' rename_column(tbl, "Test", "NewName")
 rename_column <- function(tbl, old_name, new_name) {
-  if (check_column_exist(tbl, old_name))
-    return(rename(tbl,!!new_name := old_name))
+  if (check_column_exist(tbl, old_name)) {
+    return(rename(tbl, !!new_name := old_name))
+  }
   return(tbl)
 }
 
@@ -172,8 +176,7 @@ trim_tibble <- function(tbl, columns) {
 #'
 #' @examples
 order_data <- function(data, column = NULL) {
-  switch(
-    class(data)[1],
+  switch(class(data)[1],
     tbl_df = {
       data <- arrange(data, pull(data[column]))
     },
@@ -185,7 +188,6 @@ order_data <- function(data, column = NULL) {
     }
   )
   return(data)
-
 }
 
 #' Creates a unique ID out if the measurements name
@@ -198,7 +200,7 @@ order_data <- function(data, column = NULL) {
 #'
 #' @examples
 create_id <- function(tbl, column) {
-  return(tbl %>% mutate(ID = word(pull(tbl, column),-1, sep = "_")))
+  return(tbl %>% mutate(ID = word(pull(tbl, column), -1, sep = "_")))
 }
 
 
@@ -271,8 +273,7 @@ select_column_manual <- function(tbl, iv_name, search_name) {
 #' @export
 #'
 #' @examples
-normalize_data <- function(tbl, name, norm_name,  from, to, scale)
-{
+normalize_data <- function(tbl, name, norm_name, from, to, scale) {
   tbl <- tbl[c((which(tbl[name] == from)):which(tbl[name] == to)), ]
   norm_data <-
     ((pull(tbl[norm_name]) - first(pull(tbl[norm_name]))) / (last(pull(tbl[norm_name])) - first(pull(tbl[norm_name])))) * scale
@@ -293,17 +294,16 @@ normalize_vector_data <- function(vec) {
 }
 
 
-compare_normed_data <- function(normed_data, original_data)
-{
+compare_normed_data <- function(normed_data, original_data) {
   diff_norm_data <- diff(normed_data)
   diff_original_data <- diff(original_data)
 }
 
 
-get_model_RMSE <-  function(model) {
+get_model_RMSE <- function(model) {
   original <- model$y
   fit <- model$fitted.values
-  return(sqrt(mean((fit - original) ^ 2)))
+  return(sqrt(mean((fit - original)^2)))
 }
 check_model <- function(model) {
   return(rsq(model))
@@ -344,7 +344,8 @@ create_glm_mode_tbl <- function(tbl, x_name, y_name, poly) {
 create_glm_model <- function(v_DataY, v_DataX, poly) {
   model <-
     glm(v_DataY ~ poly(v_DataX, poly),
-        family = gaussian)
+      family = gaussian
+    )
   return(model)
 }
 
@@ -362,8 +363,9 @@ create_glm_model <- function(v_DataY, v_DataX, poly) {
 create_gam_model <- function(v_DataY, v_DataX, k) {
   model <-
     gam(v_DataY ~ s(v_DataX, bs = "cr", k = k),
-        gamma = 1,
-        method = "REML")
+      gamma = 1,
+      method = "REML"
+    )
   return(model)
 }
 
@@ -380,10 +382,12 @@ create_gam_model <- function(v_DataY, v_DataX, k) {
 #' @examples
 create_gam_model_tbl <- function(tbl, x_name, y_name, k) {
   check_tibble(tbl)
-  if (!x_name %in% colnames(tbl))
+  if (!x_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
-  if (!y_name %in% colnames(tbl))
+  }
+  if (!y_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
+  }
   check_number(k)
   fit <- create_gam_model(pull(tbl, y_name), pull(tbl, x_name), k)
   return(as.numeric(fit$fitted.values))
@@ -395,7 +399,7 @@ gam_model_test <- function(tbl, k_start, k_fin) {
   RMSEs <- c()
   for (i in k_start:k_fin) {
     model <-
-      create_gam_model(tbl$normalized_CurrentDensity, tbl$'Potential[V]', i)
+      create_gam_model(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
     #   gam.check(model)
     rsq_m <- check_model(model)
     # rsq_ <- create_model_rsq_mean(rsq_m)
@@ -404,7 +408,7 @@ gam_model_test <- function(tbl, k_start, k_fin) {
     RMSEs <- c(RMSEs, RMSE)
     # png(paste0("mC6_Bef_Outward", i, ".png"))
     plot(
-      tbl$'Potential[V]',
+      tbl$"Potential[V]",
       tbl$normalized_CurrentDensity,
       type = "l",
       main = paste0(
@@ -423,7 +427,7 @@ gam_model_test <- function(tbl, k_start, k_fin) {
       cex.lab = 1.5
     )
     lines(
-      tbl$'Potential[V]',
+      tbl$"Potential[V]",
       model$fitted.values,
       type = "l",
       col = "green",
@@ -444,7 +448,7 @@ glm_model_test <- function(tbl, pstart, pfinish) {
   RMSEs <- c()
   for (i in pstart:pfinish) {
     model <-
-      create_glm_model(tbl$normalized_CurrentDensity, tbl$'Potential[V]', i)
+      create_glm_model(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
     rsq_m <- check_model(model)
     # rsq_ <- create_model_rsq_mean(rsq_m)
     RMSE <- get_model_RMSE(model)
@@ -452,7 +456,7 @@ glm_model_test <- function(tbl, pstart, pfinish) {
     RMSEs <- c(RMSEs, RMSE)
     png(paste0("mC6_Bef_Outward", i, ".png"))
     plot(
-      tbl$'Potential[V]',
+      tbl$"Potential[V]",
       tbl$normalized_CurrentDensity,
       type = "l",
       main = paste0(
@@ -471,7 +475,7 @@ glm_model_test <- function(tbl, pstart, pfinish) {
       cex.lab = 1.5
     )
     lines(
-      tbl$'Potential[V]',
+      tbl$"Potential[V]",
       model$fitted.values,
       type = "l",
       col = "green",
@@ -521,11 +525,13 @@ glm_check_plots <- function(IV_list, k_start, k_fin) {
 }
 
 
-rsq_ <- function (x, y)
-  cor(x, y) ^ 2
+rsq_ <- function(x, y) {
+  cor(x, y)^2
+}
 
-rmse <- function (fit, original)
-  sqrt(mean((fit - original) ^ 2))
+rmse <- function(fit, original) {
+  sqrt(mean((fit - original)^2))
+}
 
 #' Wrapper for smooth.spline
 #'
@@ -554,7 +560,7 @@ fit_smoothing_spline <- function(v_DataY, v_DataX, spar) {
 #' @export
 #'
 #' @examples
-fit_weighted_smoothing_spline <- function(v_DataY, v_DataX,weights, spar) {
+fit_weighted_smoothing_spline <- function(v_DataY, v_DataX, weights, spar) {
   fit <-
     smooth.spline(v_DataX, v_DataY, w = weights, spar = spar)
   return(fit)
@@ -566,8 +572,8 @@ fit_splitted_smoothing_spline <- function(v_DataY, v_DataX, splitX, spar) {
   fit_outward <-
     smooth.spline(v_DataX[splitX:length(v_DataX)], v_DataY[splitX:length(v_DataX)], spar = spar)
 
-return(list(inward = fit_inward, outward = fit_outward))
-  }
+  return(list(inward = fit_inward, outward = fit_outward))
+}
 
 #' wrapper for cobs
 #'
@@ -579,10 +585,9 @@ return(list(inward = fit_inward, outward = fit_outward))
 #' @export
 #'
 #' @examples
-fit_cobs <- function(v_DataY, v_DataX, reversePot)
-{
+fit_cobs <- function(v_DataY, v_DataX, reversePot) {
   fit <-
-    cobs(v_DataX, v_DataY, nknots = 40, lambda = 0.1, pointwise=rbind(c(0,reversePot,0)))
+    cobs(v_DataX, v_DataY, nknots = 40, lambda = 0.1, pointwise = rbind(c(0, reversePot, 0)))
 }
 
 #' Wrapper for fit_smoothing_spline
@@ -599,39 +604,38 @@ fit_cobs <- function(v_DataY, v_DataX, reversePot)
 fit_smoothing_spline_tbl <- function(tbl, x_name, y_name, spar, weighted, reversePot, splitFit = F, splitPotential = 0, newColName) {
   check_tibble(tbl)
 
-  if (!x_name %in% colnames(tbl))
+  if (!x_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
-  if (!y_name %in% colnames(tbl))
+  }
+  if (!y_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
+  }
   check_number(spar)
-  if(weighted == FALSE) {
-  fit <-
-    fit_smoothing_spline(pull(tbl, y_name), pull(tbl, x_name), spar)
-  fitCont <- fit
-  fit <- as.numeric(fit$y)
+  if (weighted == FALSE) {
+    fit <-
+      fit_smoothing_spline(pull(tbl, y_name), pull(tbl, x_name), spar)
+    fitCont <- fit
+    fit <- as.numeric(fit$y)
   }
 
-  if(weighted == TRUE && splitFit == FALSE) {
+  if (weighted == TRUE && splitFit == FALSE) {
     weights <- rep(0.1, length(pull(tbl, x_name)))
     weights[which(pull(tbl, "Potential[V]") == reversePot)] <- 1000
     fit <- fit_weighted_smoothing_spline(pull(tbl, y_name), pull(tbl, x_name), weights, spar)
     return(as.numeric(fit$y))
-
   }
-  if(weighted == FALSE && splitFit == TRUE) {
-
+  if (weighted == FALSE && splitFit == TRUE) {
     splitX <- which(pull(tbl, "Potential[V]") == splitPotential)
     wfit <-
       fit_splitted_smoothing_spline(pull(tbl, y_name), pull(tbl, x_name), splitX, spar)
-    wfit$inward$y[(splitX+1):length(pull(tbl, "Potential[V]"))] <- NA
-    wfit$outward$y <- c(rep(NA, splitX-1), wfit$outward$y)
+    wfit$inward$y[(splitX + 1):length(pull(tbl, "Potential[V]"))] <- NA
+    wfit$outward$y <- c(rep(NA, splitX - 1), wfit$outward$y)
 
-    fit <- data.frame(fitted_normalized_CurrentDensity = as.numeric(fitCont$y),fitted_normalized_CurrentDensity_Inward = wfit$inward$y,fitted_normalized_CurrentDensity_Outward = wfit$outward$y)
+    fit <- data.frame(fitted_normalized_CurrentDensity = as.numeric(fitCont$y), fitted_normalized_CurrentDensity_Inward = wfit$inward$y, fitted_normalized_CurrentDensity_Outward = wfit$outward$y)
     colnames(fit) <- c(newColName, paste(newColName, c("Inward", "Outward"), sep = "_"))
   }
 
   return(fit)
-
 }
 
 #' Wrapper for fit cobs
@@ -646,17 +650,18 @@ fit_smoothing_spline_tbl <- function(tbl, x_name, y_name, spar, weighted, revers
 #'
 #' @examples
 fit_cobs_smoothing_spline_tbl <- function(tbl, x_name, y_name, reversePot) {
-
   check_tibble(tbl)
-  if (!x_name %in% colnames(tbl))
+  if (!x_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
-  if (!y_name %in% colnames(tbl))
+  }
+  if (!y_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
+  }
   check_number(reversePot)
   fit <-
     fit_cobs(pull(tbl, y_name), pull(tbl, x_name), pull(tbl, x_name)[which(pull(tbl, "Potential[V]") == reversePot)])
 
-  fit <- smooth.spline(v_DataX, data, weights , spar = 0.4)$y
+  fit <- smooth.spline(v_DataX, data, weights, spar = 0.4)$y
   return(as.numeric(fit$fitted))
 }
 
@@ -668,7 +673,7 @@ smoothing_spline_fit_test <-
     ftests <- c()
     for (i in (seq(spar_start, spar_finish, spar_step))) {
       fit <-
-        fit_smoothing_spline(tbl$normalized_CurrentDensity, tbl$'Potential[V]', i)
+        fit_smoothing_spline(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
       # fit <-
       #   fit_smoothing_spline(fit$y, fit$x, 0.7)
       rsq__m <- rsq_(fit$y, tbl$normalized_CurrentDensity)
@@ -681,7 +686,7 @@ smoothing_spline_fit_test <-
       ftests <- c(ftests, ftest)
       #   png(paste0("mC6_Bef_Outward", i, ".png"))
       plot(
-        tbl$'Potential[V]',
+        tbl$"Potential[V]",
         tbl$normalized_CurrentDensity,
         type = "l",
         main = paste0(
@@ -700,7 +705,7 @@ smoothing_spline_fit_test <-
         cex.lab = 1.5
       )
       lines(
-        tbl$'Potential[V]',
+        tbl$"Potential[V]",
         fit$y,
         type = "l",
         col = "green",
@@ -716,12 +721,14 @@ smoothing_spline_fit_test <-
 smoothing_spline_check_plots <-
   function(IV_list, spar_start, spar_fin, spar_step) {
     vals <-
-      map_depth(IV_list,
-                2,
-                smoothing_spline_fit_test,
-                spar_start,
-                spar_fin,
-                spar_step)
+      map_depth(
+        IV_list,
+        2,
+        smoothing_spline_fit_test,
+        spar_start,
+        spar_fin,
+        spar_step
+      )
     flatVals <- flatten(vals)
     bindVals <- bind_rows(flatVals)
     means <- rowMeans(bindVals)
@@ -796,10 +803,12 @@ fit_supsmu <- function(v_DataY, v_DataX, span) {
 
 fit_supsmu_tbl <- function(tbl, x_name, y_name, span) {
   check_tibble(tbl)
-  if (!x_name %in% colnames(tbl))
+  if (!x_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
-  if (!y_name %in% colnames(tbl))
+  }
+  if (!y_name %in% colnames(tbl)) {
     stop(paste0(x_name, "not found in tibble"))
+  }
   check_number(span)
   fit <- supsmu(pull(tbl, y_name), pull(tbl, x_name), span)
   return(as.numeric(fit$y))
@@ -814,7 +823,7 @@ supsmu_fit_test <-
     ftests <- c()
     for (i in (seq(span_start, span_finish, span_step))) {
       fit <-
-        fit_supsmu(tbl$normalized_CurrentDensity, tbl$'Potential[V]', i)
+        fit_supsmu(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
       rsq__m <- rsq_(fit$y, tbl$normalized_CurrentDensity)
       # rsq__ <- create_model_rsq__mean(rsq__m)
       RMSE <- rmse(fit$y, tbl$normalized_CurrentDensity)
@@ -825,7 +834,7 @@ supsmu_fit_test <-
       ftests <- c(ftests, ftest)
       #   png(paste0("mC6_Bef_Outward", i, ".png"))
       plot(
-        tbl$'Potential[V]',
+        tbl$"Potential[V]",
         tbl$normalized_CurrentDensity,
         type = "l",
         main = paste0(
@@ -844,14 +853,14 @@ supsmu_fit_test <-
         cex.lab = 1.5
       )
       lines(
-        tbl$'Potential[V]',
+        tbl$"Potential[V]",
         fit$y,
         type = "l",
         col = "green",
         lwd = 2
       )
       legend("topleft", c("normed IV", "model"), fill = c("black", "green"))
-      #dev.off()
+      # dev.off()
     }
     return(c(means, RMSEs, ftests))
   }
@@ -983,9 +992,11 @@ save_IV_ASC <- function(tbl, IV_location) {
 #' @examples
 check_and_create_folder <- function(directory, folder) {
   ifelse(!dir.exists(file.path(paste(
-    directory, folder, sep = "/"
+    directory, folder,
+    sep = "/"
   ))), dir.create(file.path(paste(
-    directory, folder, sep = "/"
+    directory, folder,
+    sep = "/"
   ))), FALSE)
 }
 
@@ -1002,8 +1013,9 @@ check_and_create_folder <- function(directory, folder) {
 tbl_list_to_column_tbl <- function(tbl_list, column) {
   check_list(tbl_list)
   check_string(column)
-  tbl_list <- map(tbl_list, function(x)
-    pull(x[column]))
+  tbl_list <- map(tbl_list, function(x) {
+    pull(x[column])
+  })
   column_tbl <- bind_cols(tbl_list)
   return(column_tbl)
 }
@@ -1035,7 +1047,7 @@ filter_tbl_columns <- function(tbl, filter_name) {
 #' @examples
 create_IV_pharmacon_list <- function(names_list) {
   check_list(names_list)
-  return(word(names_list,-1, sep = "_"))
+  return(word(names_list, -1, sep = "_"))
 }
 
 
@@ -1047,7 +1059,7 @@ create_IV_pharmacon_list <- function(names_list) {
 #' @return
 #' @export
 #'
-#' @examples list(check_OAG, check_EA) => list(list(check_OAG), list(check_EA))
+#' @examples list(check_OAG, check_EA) -> list(list(check_OAG), list(check_EA))
 split_list_by_pharmacon <- function(data_list, names_list) {
   check_list(data_list)
   check_list(names_list)
@@ -1056,9 +1068,10 @@ split_list_by_pharmacon <- function(data_list, names_list) {
   unique_IV_pharmacons <- unique(IV_pharmacons)
   splitted_list <-
     map(unique_IV_pharmacons, function(u_IV_pharmacon,
-                                       IV_pharmacons ,
-                                       data_list)
-      data_list[which(IV_pharmacons == u_IV_pharmacon)], IV_pharmacons, data_list)
+                                       IV_pharmacons,
+                                       data_list) {
+      data_list[which(IV_pharmacons == u_IV_pharmacon)]
+    }, IV_pharmacons, data_list)
   names(splitted_list) <- unique_IV_pharmacons
   return(splitted_list)
 }
@@ -1088,8 +1101,9 @@ join_splitted_list <- function(splitted_list) {
 #' @examples
 grubbs.flag <- function(vec, outlier_vec = NA) {
   check_numeric(vec)
-  if (anyNA(vec))
+  if (anyNA(vec)) {
     return(tibble(vec = vec, Outlier = NA))
+  }
   outliers <- NULL
   test <- vec
   if (!any(is.na(outlier_vec))) {
@@ -1097,7 +1111,7 @@ grubbs.flag <- function(vec, outlier_vec = NA) {
     outliers <- vec[outlier_vec]
   }
 
-  if (length(test) < 3){
+  if (length(test) < 3) {
     warning("Grubb's test requires > 2 input values")
     return(tibble(vec = vec, Outlier = outlier_vec))
   }
@@ -1130,7 +1144,7 @@ grubbs.flag <- function(vec, outlier_vec = NA) {
 detect_grubbs_outlier <- function(tbl, column_name) {
   check_tibble(tbl)
   check_string(column_name)
-  vec_column <-   pull(tbl[column_name])
+  vec_column <- pull(tbl[column_name])
   outlier_tbl <- grubbs.flag(vec_column)
   return(pull(outlier_tbl, "Outlier"))
 }
@@ -1145,16 +1159,16 @@ detect_grubbs_outlier <- function(tbl, column_name) {
 #' @export
 #'
 #' @examples
-double_iterative_grubbs_outlier <- function(tbl,column_name,outlier_list){
+double_iterative_grubbs_outlier <- function(tbl, column_name, outlier_list) {
   check_tibble(tbl)
   check_string(column_name)
-    column_name <- unlist(column_name)
-  outlier_df <-  data.frame(t(matrix(unlist(outlier_list), nrow=length(outlier_list), byrow=T)))
+  column_name <- unlist(column_name)
+  outlier_df <- data.frame(t(matrix(unlist(outlier_list), nrow = length(outlier_list), byrow = T)))
   colnames(outlier_df) <- column_name
   outlier <- rowSums(outlier_df) >= 1
-  vec_column <-   pull(tbl[column_name])
+  vec_column <- pull(tbl[column_name])
   # if(length(which(outlier == FALSE)) < 3) return(unlist(outlier_list))
-  outlier_tbl <- grubbs.flag(vec_column,outlier)
+  outlier_tbl <- grubbs.flag(vec_column, outlier)
   return(pull(outlier_tbl, "Outlier"))
 }
 
@@ -1183,12 +1197,11 @@ grubbs.flag_results <- function(vec) {
 #' @export
 #'
 #' @examples
-save_tbl_list_as_excel <- function(summary_list, sheet_names)
-{
+save_tbl_list_as_excel <- function(summary_list, sheet_names) {
   check_list(summary_list)
   check_character(sheet_names)
-  directory <- gfile("Save Directory",   type = "save")
-  wb = createWorkbook()
+  directory <- gfile("Save Directory", type = "save")
+  wb <- createWorkbook()
   map2(summary_list, sheet_names, function(summary, sheet, directory) {
     sheet <- addWorksheet(wb, sheet)
     writeData(wb, sheet, summary)
@@ -1220,6 +1233,5 @@ filter_IV_list <- function(IV_list, filter) {
 #'
 #' @examples
 add_phantom_supersubscript <- function(label) {
-
-  paste0("$\\phantom{^|} $", label, "$\\phantom{_|}$" )
+  paste0("$\\phantom{^|} $", label, "$\\phantom{_|}$")
 }

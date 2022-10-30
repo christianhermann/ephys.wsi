@@ -44,26 +44,26 @@
 create_plot <-
   function(plot_type = NULL,
            IV_list = NULL,
-           summary_list = NULL ,
-           column_list = NULL ,
-           peak_list = NULL ,
-           series_vector = NULL ,
+           summary_list = NULL,
+           column_list = NULL,
+           peak_list = NULL,
+           series_vector = NULL,
            ylab = NULL,
            measurement_name = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
            SD_MAD = NULL,
            SD_MAD_shadow_direction = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
-           save_dir = NULL ,
-           save_name = NULL ,
-           save_width = NULL ,
-           save_height = NULL ,
+           save_dir = NULL,
+           save_name = NULL,
+           save_width = NULL,
+           save_height = NULL,
            save_unit = "mm",
            legend_seperate = FALSE,
            spacer_plot = FALSE,
@@ -77,32 +77,36 @@ create_plot <-
            splitPotential = 0,
            ...) {
     if (!is.null(display_N_legend)) {
-      if (display_N_legend == TRUE && !invalid(measurement_name))
+      if (display_N_legend == TRUE && !invalid(measurement_name)) {
         measurement_name <-
           paste0(
             measurement_name,
             " (n=",
-            map_dbl(series_vector, function(x, y)
-              length(y[[x]]) / display_N_legend_divisor, IV_list),
+            map_dbl(series_vector, function(x, y) {
+              length(y[[x]]) / display_N_legend_divisor
+            }, IV_list),
             ")"
           )
+      }
 
-      if (display_N_legend == TRUE && invalid(measurement_name))
+      if (display_N_legend == TRUE && invalid(measurement_name)) {
         measurement_name <-
           paste0(
             unlist(series_vector),
             " (n=",
-            map_dbl(series_vector, function(x, y)
-              length(y[[x]]) / display_N_legend_divisor, IV_list),
+            map_dbl(series_vector, function(x, y) {
+              length(y[[x]]) / display_N_legend_divisor
+            }, IV_list),
             ")"
           )
+      }
     }
 
     try(splitPotential <- data_storage_envir$splitPotential)
-    if(n_spacer > 0) spacer_plot = T
+    if (n_spacer > 0) spacer_plot <- T
 
 
-    #####Boxplot#####
+    ##### Boxplot#####
     if (plot_type == "Boxplot") {
       finished_plot <- box_plot(
         summary_list = summary_list,
@@ -127,7 +131,7 @@ create_plot <-
       )
     }
 
-    #####Ratio#####
+    ##### Ratio#####
     if (plot_type == "RatioPlot") {
       finished_plot <- ratio_plot(
         summary_list = summary_list,
@@ -152,12 +156,10 @@ create_plot <-
       )
     }
 
-    #####Singe IV Plot#####
+    ##### Singe IV Plot#####
     if (plot_type == "SingleIV") {
-      if (splitted == TRUE)
-      {
-        switch(
-          column_list,
+      if (splitted == TRUE) {
+        switch(column_list,
           "normalized_slopeConductance" = {
             column_list <-
               c(
@@ -167,8 +169,10 @@ create_plot <-
           },
           "normalized_CurrentDensity" = {
             column_list <-
-              c("normalized_CurrentDensity_Inward",
-                "normalized_CurrentDensity_Outward")
+              c(
+                "normalized_CurrentDensity_Inward",
+                "normalized_CurrentDensity_Outward"
+              )
           },
           "fitted_normalized_CurrentDensity" = {
             column_list <-
@@ -179,8 +183,10 @@ create_plot <-
           },
           "CurrentDensity[pA/pF]" = {
             column_list <-
-              c("CurrentDensity[pA/pF]",
-                "CurrentDensity[pA/pF]")
+              c(
+                "CurrentDensity[pA/pF]",
+                "CurrentDensity[pA/pF]"
+              )
           },
           {
 
@@ -189,7 +195,6 @@ create_plot <-
 
 
         finished_plotInward <-
-
           single_plot(
             IV_list = IV_list,
             column_list = column_list[1],
@@ -197,18 +202,17 @@ create_plot <-
             ylab = ylab,
             used_theme = used_theme,
             used_axis_function = used_axis_function,
-            used_font =  used_font,
+            used_font = used_font,
             used_fontsize = used_fontsize,
             linesize = linesize,
             used_colors = used_colors,
             overrideYlim = overrideYlim,
-            xlims =  c(settings_envir$ramp_data[1] * 1.04 , splitPotential),
-            xend1 = settings_envir$ramp_data[1] * 1.04 ,
+            xlims = c(settings_envir$ramp_data[1] * 1.04, splitPotential),
+            xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], splitPotential)
-          ) +  theme(legend.position = "none")
+          ) + theme(legend.position = "none")
 
         finished_plotOutward <-
-
           single_plot(
             IV_list = IV_list,
             column_list = column_list[2],
@@ -216,15 +220,14 @@ create_plot <-
             ylab = ylab,
             used_theme = used_theme,
             used_axis_function = used_axis_function,
-            used_font =  used_font,
+            used_font = used_font,
             used_fontsize = used_fontsize,
             linesize = linesize,
             used_colors = used_colors,
             overrideYlim = overrideYlim,
-            xlims =  c(splitPotential - abs((
+            xlims = c(splitPotential - abs((
               settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04
-            )
-            ), settings_envir$ramp_data[2]),
+            )), settings_envir$ramp_data[2]),
             xend1 = settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04,
             xends2 = c(splitPotential, settings_envir$ramp_data[2])
           )
@@ -232,14 +235,15 @@ create_plot <-
         finished_plot <-
           finished_plotInward + finished_plotOutward
 
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plotOutward + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_woLegend <-
-          finished_plotInward  + finished_plotOutward + theme(legend.position = "none")
-
+          finished_plotInward + finished_plotOutward + theme(legend.position = "none")
       }
       if (splitted == FALSE) {
         finished_plot <-
@@ -251,35 +255,35 @@ create_plot <-
               ylab = ylab,
               used_theme = used_theme,
               used_axis_function = used_axis_function,
-              used_font =  used_font,
+              used_font = used_font,
               used_fontsize = used_fontsize,
               linesize = linesize,
               used_colors = used_colors,
               overrideYlim = overrideYlim,
-              xlims =  c(
+              xlims = c(
                 settings_envir$ramp_data[1] * 1.04,
                 settings_envir$ramp_data[2]
               ),
-              xend1 =  settings_envir$ramp_data[1] * 1.04,
+              xend1 = settings_envir$ramp_data[1] * 1.04,
               xends2 = c(settings_envir$ramp_data[1], settings_envir$ramp_data[2])
             )
           )
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plot + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_woLegend <-
-          finished_plot  + theme(legend.position = "none")
+          finished_plot + theme(legend.position = "none")
       }
     }
 
-    #####Matplot#####
+    ##### Matplot#####
     if (plot_type == "Matplot") {
-      if (splitted == TRUE)
-      {
-        switch(
-          column_list,
+      if (splitted == TRUE) {
+        switch(column_list,
           "normalized_slopeConductance" = {
             column_list <-
               c(
@@ -289,8 +293,10 @@ create_plot <-
           },
           "normalized_CurrentDensity" = {
             column_list <-
-              c("normalized_CurrentDensity_Inward",
-                "normalized_CurrentDensity_Outward")
+              c(
+                "normalized_CurrentDensity_Inward",
+                "normalized_CurrentDensity_Outward"
+              )
           },
           "fitted_normalized_CurrentDensity" = {
             column_list <-
@@ -301,8 +307,10 @@ create_plot <-
           },
           "CurrentDensity[pA/pF]" = {
             column_list <-
-              c("CurrentDensity[pA/pF]",
-                "CurrentDensity[pA/pF]")
+              c(
+                "CurrentDensity[pA/pF]",
+                "CurrentDensity[pA/pF]"
+              )
           },
           {
 
@@ -310,7 +318,6 @@ create_plot <-
         )
 
         finished_plotInward <-
-
           mat_plot(
             IV_list = IV_list,
             column_list = column_list[1],
@@ -329,15 +336,14 @@ create_plot <-
             used_axis_function = used_axis_function,
             used_theme = used_theme,
             overrideYlim = overrideYlim,
-            xlims =  c(settings_envir$ramp_data[1] * 1.04 , splitPotential),
-            xend1 = settings_envir$ramp_data[1] * 1.04 ,
+            xlims = c(settings_envir$ramp_data[1] * 1.04, splitPotential),
+            xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], splitPotential)
-          ) +  theme(legend.position = "none")
+          ) + theme(legend.position = "none")
 
 
 
         finished_plotOutward <-
-
           mat_plot(
             IV_list = IV_list,
             column_list = column_list[2],
@@ -356,10 +362,9 @@ create_plot <-
             used_axis_function = used_axis_function,
             used_theme = used_theme,
             overrideYlim = overrideYlim,
-            xlims =  c(splitPotential - abs((
+            xlims = c(splitPotential - abs((
               settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04
-            )
-            ), settings_envir$ramp_data[2]),
+            )), settings_envir$ramp_data[2]),
             xend1 = settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04,
             xends2 = c(splitPotential, settings_envir$ramp_data[2])
           )
@@ -367,13 +372,15 @@ create_plot <-
         finished_plot <-
           finished_plotInward + finished_plotOutward
 
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plotOutward + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_woLegend <-
-          finished_plotInward  + finished_plotOutward + theme(legend.position = "none")
+          finished_plotInward + finished_plotOutward + theme(legend.position = "none")
       }
       if (splitted == FALSE) {
         finished_plot <-
@@ -395,30 +402,30 @@ create_plot <-
             legend_seperate = legend_seperate,
             spacer_plot = spacer_plot,
             overrideYlim = overrideYlim,
-            xlims =  c(
+            xlims = c(
               settings_envir$ramp_data[1] * 1.04,
               settings_envir$ramp_data[2]
             ),
-            xend1 =  settings_envir$ramp_data[1] * 1.04,
+            xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], settings_envir$ramp_data[2])
           )
 
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plot + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_woLegend <-
-          finished_plot  + theme(legend.position = "none")
+          finished_plot + theme(legend.position = "none")
       }
     }
 
-    #####Median#####
+    ##### Median#####
     if (plot_type == "MedianTraces") {
-      if (splitted == TRUE)
-      {
-        switch(
-          column_list,
+      if (splitted == TRUE) {
+        switch(column_list,
           "normalized_slopeConductance" = {
             column_list <-
               c(
@@ -428,8 +435,10 @@ create_plot <-
           },
           "normalized_CurrentDensity" = {
             column_list <-
-              c("normalized_CurrentDensity_Inward",
-                "normalized_CurrentDensity_Outward")
+              c(
+                "normalized_CurrentDensity_Inward",
+                "normalized_CurrentDensity_Outward"
+              )
           },
           "fitted_normalized_CurrentDensity" = {
             column_list <-
@@ -440,8 +449,10 @@ create_plot <-
           },
           "CurrentDensity[pA/pF]" = {
             column_list <-
-              c("CurrentDensity[pA/pF]",
-                "CurrentDensity[pA/pF]")
+              c(
+                "CurrentDensity[pA/pF]",
+                "CurrentDensity[pA/pF]"
+              )
           },
           {
 
@@ -467,10 +478,10 @@ create_plot <-
             used_axis_function = used_axis_function,
             used_theme = used_theme,
             overrideYlim = overrideYlim,
-            xlims =  c(settings_envir$ramp_data[1] * 1.04 , splitPotential),
-            xend1 = settings_envir$ramp_data[1] * 1.04 ,
+            xlims = c(settings_envir$ramp_data[1] * 1.04, splitPotential),
+            xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], splitPotential)
-          ) +  theme(legend.position = "none")
+          ) + theme(legend.position = "none")
 
         finished_plotOutward <-
           median_plot(
@@ -491,10 +502,12 @@ create_plot <-
             used_axis_function = used_axis_function,
             used_theme = used_theme,
             overrideYlim = overrideYlim,
-            xlims =  c(splitPotential - abs(
-              settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04
-            )
-            , settings_envir$ramp_data[2]),
+            xlims = c(
+              splitPotential - abs(
+                settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04
+              ),
+              settings_envir$ramp_data[2]
+            ),
             xend1 = settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04,
             xends2 = c(splitPotential, settings_envir$ramp_data[2])
           )
@@ -502,14 +515,15 @@ create_plot <-
         finished_plot <-
           finished_plotInward + finished_plotOutward
 
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plotOutward + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_woLegend <-
-          finished_plotInward  + finished_plotOutward + theme(legend.position = "none")
-
+          finished_plotInward + finished_plotOutward + theme(legend.position = "none")
       }
       if (splitted == FALSE) {
         finished_plot <-
@@ -531,38 +545,34 @@ create_plot <-
             used_axis_function = used_axis_function,
             used_theme = used_theme,
             overrideYlim = overrideYlim,
-            xlims =  c(
+            xlims = c(
               settings_envir$ramp_data[1] * 1.04,
               settings_envir$ramp_data[2]
             ),
-            xend1 =  settings_envir$ramp_data[1] * 1.04,
+            xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], settings_envir$ramp_data[2]),
             ...
           )
 
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plot + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_woLegend <-
-          finished_plot  + theme(legend.position = "none")
-
-
-
+          finished_plot + theme(legend.position = "none")
       }
-
     }
 
 
-    #####P_Plot#####
+    ##### P_Plot#####
     if (plot_type == "P-plot") {
       n_spacer <- length(series_vector) + n_spacer
 
-      if (splitted == TRUE)
-      {
-        switch(
-          column_list,
+      if (splitted == TRUE) {
+        switch(column_list,
           "normalized_slopeConductance" = {
             column_list <-
               c(
@@ -572,8 +582,10 @@ create_plot <-
           },
           "normalized_CurrentDensity" = {
             column_list <-
-              c("normalized_CurrentDensity_Inward",
-                "normalized_CurrentDensity_Outward")
+              c(
+                "normalized_CurrentDensity_Inward",
+                "normalized_CurrentDensity_Outward"
+              )
           },
           "fitted_normalized_CurrentDensity" = {
             column_list <-
@@ -584,8 +596,10 @@ create_plot <-
           },
           "CurrentDensity[pA/pF]" = {
             column_list <-
-              c("CurrentDensity[pA/pF]",
-                "CurrentDensity[pA/pF]")
+              c(
+                "CurrentDensity[pA/pF]",
+                "CurrentDensity[pA/pF]"
+              )
           },
           {
 
@@ -616,11 +630,11 @@ create_plot <-
             n_spacer = n_spacer,
             ratio_Median_P_plot = ratio_Median_P_plot,
             overrideYlim = overrideYlim,
-            xlims =  c(settings_envir$ramp_data[1] * 1.04 , splitPotential),
-            xend1 = settings_envir$ramp_data[1] * 1.04 ,
+            xlims =  c(settings_envir$ramp_data[1] * 1.04, splitPotential),
+            xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], splitPotential),
             ...
-          ) +  theme(legend.position = "none")
+          ) + theme(legend.position = "none")
         finished_plot_Outward <-
           p_plot(
             IV_list = IV_list,
@@ -643,19 +657,20 @@ create_plot <-
             n_spacer = n_spacer,
             overrideYlim = overrideYlim,
             ratio_Median_P_plot = ratio_Median_P_plot,
-            xlims =  c(splitPotential - abs(
+            xlims = c(splitPotential - abs(
               settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04
-
             ), settings_envir$ramp_data[2]),
             xend1 = settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04,
             xends2 = c(splitPotential, settings_envir$ramp_data[2]),
             ...
           )
 
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plot_Inward[[1]] + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_Inward_woLegend <- finished_plot_Inward
         finished_plot_Inward_woLegend[[1]] <- finished_plot_Inward_woLegend[[1]] + theme(legend.position = "none")
@@ -670,8 +685,7 @@ create_plot <-
           finished_plot_Inward_woLegend | finished_plot_Outward
       }
 
-      if (splitted == FALSE)
-      {
+      if (splitted == FALSE) {
         finished_plot <-
           p_plot(
             IV_list = IV_list,
@@ -694,36 +708,35 @@ create_plot <-
             n_spacer = n_spacer,
             overrideYlim = overrideYlim,
             ratio_Median_P_plot = ratio_Median_P_plot,
-            xlims =  c(
+            xlims = c(
               settings_envir$ramp_data[1] * 1.04,
               settings_envir$ramp_data[2]
             ),
-            xend1 =  settings_envir$ramp_data[1] * 1.04,
+            xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], settings_envir$ramp_data[2]),
             ...
           )
 
-        legend = grid.arrange(get_legend(
+        legend <- grid.arrange(get_legend(
           finished_plot[[1]] + theme(
             legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())))
+            legend.title = element_blank()
+          )
+        ))
 
         finished_plot_woLegend <-
           finished_plot
 
         finished_plot_woLegend[[1]] <- finished_plot_woLegend[[1]] + theme(legend.position = "none")
-
       }
     }
 
 
-    #####Complete_plot######
+    ##### Complete_plot######
     if (plot_type == "Complete") {
-
       n_spacer <- length(series_vector) + n_spacer
 
       if (splitted == FALSE) {
-
         matplot <- mat_plot(
           IV_list = IV_list,
           column_list = column_list[[1]],
@@ -742,14 +755,14 @@ create_plot <-
           legend_seperate = legend_seperate,
           spacer_plot = spacer_plot,
           overrideYlim = overrideYlim[[1]],
-          xlims =  c(settings_envir$ramp_data[1] * 1.04, settings_envir$ramp_data[2]),
-          xend1 =  settings_envir$ramp_data[1] * 1.04,
+          xlims = c(settings_envir$ramp_data[1] * 1.04, settings_envir$ramp_data[2]),
+          xend1 = settings_envir$ramp_data[1] * 1.04,
           xends2 = c(settings_envir$ramp_data[1], settings_envir$ramp_data[2])
         )
 
 
 
-        pplot <-  p_plot(
+        pplot <- p_plot(
           IV_list = IV_list,
           column_list = column_list[[2]],
           ylab = ylab[2],
@@ -780,33 +793,41 @@ create_plot <-
 
         pplot <- pplot[[2]]
 
-        matplot <- matplot + theme(axis.title.x = element_blank(),
-                                   plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm"))
-        medianplot <- medianplot + theme(axis.title.x = element_blank(),
-                                         plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm"))
+        matplot <- matplot + theme(
+          axis.title.x = element_blank(),
+          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+        )
+        medianplot <- medianplot + theme(
+          axis.title.x = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm")
+        )
 
-        legend = grid.arrange(get_legend(
-          matplot + theme(
-            legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())),
+        legend <- grid.arrange(
+          get_legend(
+            matplot + theme(
+              legend.box.margin = margin(0, 0, 0, 1, "cm"),
+              legend.title = element_blank()
+            )
+          ),
           get_legend(
             medianplot + theme(
               legend.box.margin = margin(0, 0, 0, 1, "cm"),
               legend.title = element_blank()
-            )))
+            )
+          )
+        )
 
         finished_plot_woLegend <- wrap_plots(matplot + theme(legend.position = "none"),
-                                             medianplot + theme(legend.position = "none"),
-                                             pplot,
-                                             heights = c(0.5,0.5, ratio_Median_P_plot))
+          medianplot + theme(legend.position = "none"),
+          pplot,
+          heights = c(0.5, 0.5, ratio_Median_P_plot)
+        )
 
 
-        finished_plot <- wrap_plots(matplot, medianplot, pplot, heights = c(0.5,0.5, ratio_Median_P_plot))
-
+        finished_plot <- wrap_plots(matplot, medianplot, pplot, heights = c(0.5, 0.5, ratio_Median_P_plot))
       }
 
-      if (splitted == TRUE)
-      {
+      if (splitted == TRUE) {
         matplot <- mat_plot(
           IV_list = IV_list,
           column_list = column_list[[1]],
@@ -825,14 +846,13 @@ create_plot <-
           legend_seperate = legend_seperate,
           spacer_plot = spacer_plot,
           overrideYlim = overrideYlim[[1]],
-          xlims =  c(settings_envir$ramp_data[1] * 1.04, settings_envir$ramp_data[2]),
-          xend1 =  settings_envir$ramp_data[1] * 1.04,
+          xlims = c(settings_envir$ramp_data[1] * 1.04, settings_envir$ramp_data[2]),
+          xend1 = settings_envir$ramp_data[1] * 1.04,
           xends2 = c(settings_envir$ramp_data[1], settings_envir$ramp_data[2])
         )
 
         column_list <- map(column_list[-1], function(column_list) {
-          switch(
-            column_list,
+          switch(column_list,
             "normalized_slopeConductance" = {
               column_list <-
                 c(
@@ -856,8 +876,10 @@ create_plot <-
             },
             "CurrentDensity[pA/pF]" = {
               column_list <-
-                c("CurrentDensity[pA/pF]_Inward",
-                  "CurrentDensity[pA/pF]_Outward")
+                c(
+                  "CurrentDensity[pA/pF]_Inward",
+                  "CurrentDensity[pA/pF]_Outward"
+                )
             },
             {
 
@@ -884,10 +906,10 @@ create_plot <-
           legend_seperate = legend_seperate,
           spacer_plot = spacer_plot,
           overrideYlim = overrideYlim[[2]],
-          xlims =  c(settings_envir$ramp_data[1] * 1.04 , splitPotential),
-          xend1 = settings_envir$ramp_data[1] * 1.04 ,
+          xlims = c(settings_envir$ramp_data[1] * 1.04, splitPotential),
+          xend1 = settings_envir$ramp_data[1] * 1.04,
           xends2 = c(settings_envir$ramp_data[1], splitPotential)
-        ) +  theme(legend.position = "none")
+        ) + theme(legend.position = "none")
 
         matplotOutward2 <- mat_plot(
           IV_list = IV_list,
@@ -907,12 +929,12 @@ create_plot <-
           legend_seperate = legend_seperate,
           spacer_plot = spacer_plot,
           overrideYlim = overrideYlim[[2]],
-          xlims =  c(splitPotential - abs((settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04)), settings_envir$ramp_data[2]),
+          xlims = c(splitPotential - abs((settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04)), settings_envir$ramp_data[2]),
           xend1 = settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04,
           xends2 = c(splitPotential, settings_envir$ramp_data[2])
         )
 
-        pplotInward <-  p_plot(
+        pplotInward <- p_plot(
           IV_list = IV_list,
           column_list = column_list[[2]][1],
           ylab = ylab[3],
@@ -933,13 +955,13 @@ create_plot <-
           n_spacer = n_spacer,
           overrideYlim = overrideYlim[[3]],
           ratio_Median_P_plot = ratio_Median_P_plot,
-          xlims =  c(settings_envir$ramp_data[1] * 1.04 , splitPotential),
-          xend1 = settings_envir$ramp_data[1] * 1.04 ,
+          xlims =  c(settings_envir$ramp_data[1] * 1.04, splitPotential),
+          xend1 = settings_envir$ramp_data[1] * 1.04,
           xends2 = c(settings_envir$ramp_data[1], splitPotential),
           ...
         )
 
-        pplotOutward <-  p_plot(
+        pplotOutward <- p_plot(
           IV_list = IV_list,
           column_list = column_list[[2]],
           ylab = ylab[3],
@@ -967,24 +989,34 @@ create_plot <-
         )
 
 
-        medianplotInward <- pplotInward [[1]]
-        medianplotOutward <- pplotOutward [[1]]
+        medianplotInward <- pplotInward[[1]]
+        medianplotOutward <- pplotOutward[[1]]
 
-        pplotInward  <- pplotInward [[2]]
-        pplotOutward  <- pplotOutward [[2]]
+        pplotInward <- pplotInward[[2]]
+        pplotOutward <- pplotOutward[[2]]
 
 
 
-        matplot<- matplot + theme(axis.title.x = element_blank(),
-                                  plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm"))
-        matplotInward2 <- matplotInward2 + theme(axis.title.x = element_blank(),
-                                                 plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm"))
-        medianplotInward <- medianplotInward + theme(axis.title.x = element_blank(),
-                                                     plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm"))
-        matplotOutward2 <- matplotOutward2 + theme(axis.title.x = element_blank(),
-                                                   plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm"))
-        medianplotOutward <- medianplotOutward + theme(axis.title.x = element_blank(),
-                                                       plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm"))
+        matplot <- matplot + theme(
+          axis.title.x = element_blank(),
+          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+        )
+        matplotInward2 <- matplotInward2 + theme(
+          axis.title.x = element_blank(),
+          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+        )
+        medianplotInward <- medianplotInward + theme(
+          axis.title.x = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm")
+        )
+        matplotOutward2 <- matplotOutward2 + theme(
+          axis.title.x = element_blank(),
+          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+        )
+        medianplotOutward <- medianplotOutward + theme(
+          axis.title.x = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm")
+        )
 
         layout <- "
           AAHH
@@ -993,36 +1025,44 @@ create_plot <-
           DDGG
           "
 
-        legend = grid.arrange(get_legend(
-          matplot + theme(
-            legend.box.margin = margin(0, 0, 0, 1, "cm"),
-            legend.title = element_blank())),
+        legend <- grid.arrange(
+          get_legend(
+            matplot + theme(
+              legend.box.margin = margin(0, 0, 0, 1, "cm"),
+              legend.title = element_blank()
+            )
+          ),
           get_legend(
             medianplotInward + theme(
               legend.box.margin = margin(0, 0, 0, 1, "cm"),
               legend.title = element_blank()
-            )))
+            )
+          )
+        )
 
 
 
 
-        finished_plot <- wrap_plots(A = matplot + theme(legend.position = "none"), H = legend,
-                                    B = matplotInward2 + theme(legend.position = "none") , E = matplotOutward2 + theme(legend.position = "none"),
-                                    C = medianplotInward + theme(legend.position = "none"), F = medianplotOutward + theme(legend.position = "none"),
-                                    D = pplotInward , G = pplotOutward ,
-                                    design = layout,  heights = c(0.33,0.33,0.33,ratio_Median_P_plot), guides = "keep")
+        finished_plot <- wrap_plots(
+          A = matplot + theme(legend.position = "none"), H = legend,
+          B = matplotInward2 + theme(legend.position = "none"), E = matplotOutward2 + theme(legend.position = "none"),
+          C = medianplotInward + theme(legend.position = "none"), F = medianplotOutward + theme(legend.position = "none"),
+          D = pplotInward, G = pplotOutward,
+          design = layout, heights = c(0.33, 0.33, 0.33, ratio_Median_P_plot), guides = "keep"
+        )
 
-        finished_plot_woLegend <- wrap_plots(A = matplot + theme(legend.position = "none"), H = plot_spacer(),
-                                             B = matplotInward2 + theme(legend.position = "none") , E = matplotOutward2 + theme(legend.position = "none"),
-                                             C = medianplotInward + theme(legend.position = "none"), F = medianplotOutward + theme(legend.position = "none"),
-                                             D = pplotInward , G = pplotOutward ,
-                                             design = layout,  heights = c(0.33,0.33,0.33,ratio_Median_P_plot), guides = "keep")
-
+        finished_plot_woLegend <- wrap_plots(
+          A = matplot + theme(legend.position = "none"), H = plot_spacer(),
+          B = matplotInward2 + theme(legend.position = "none"), E = matplotOutward2 + theme(legend.position = "none"),
+          C = medianplotInward + theme(legend.position = "none"), F = medianplotOutward + theme(legend.position = "none"),
+          D = pplotInward, G = pplotOutward,
+          design = layout, heights = c(0.33, 0.33, 0.33, ratio_Median_P_plot), guides = "keep"
+        )
       }
-}
-    #####Save#####
+    }
+    ##### Save#####
     if (!is.null(save_dir)) {
-      if (!is.null(legend_seperate))
+      if (!is.null(legend_seperate)) {
         if (legend_seperate == TRUE) {
           if (plot_type == "P-plot") {
             legend <-
@@ -1033,11 +1073,11 @@ create_plot <-
                 )
               )
             finished_plot[[1]] <-
-              finished_plot[[1]]  + theme(legend.position = "none")
+              finished_plot[[1]] + theme(legend.position = "none")
           }
           if (plot_type == "Complete") {
             finished_plot[[1]] <-
-              finished_plot[[1]]  + theme(legend.position = "none")
+              finished_plot[[1]] + theme(legend.position = "none")
             legend <-
               get_legend(
                 finished_plot[[2]] + theme(
@@ -1046,9 +1086,8 @@ create_plot <-
                 )
               )
             finished_plot[[2]] <-
-              finished_plot[[2]]  + theme(legend.position = "none")
-          }
-          else {
+              finished_plot[[2]] + theme(legend.position = "none")
+          } else {
             legend <-
               get_legend(
                 finished_plot + theme(
@@ -1057,7 +1096,7 @@ create_plot <-
                 )
               )
             finished_plot <-
-              finished_plot  + theme(legend.position = "none")
+              finished_plot + theme(legend.position = "none")
           }
           ggsave(
             paste0("legend_", save_name),
@@ -1068,11 +1107,11 @@ create_plot <-
             units = "mm",
             limitsize = F
           )
-
         }
+      }
       ggsave(
         save_name,
-        finished_plot ,
+        finished_plot,
         path = save_dir,
         width = save_width,
         height = save_height,
@@ -1082,11 +1121,11 @@ create_plot <-
       print(paste0(save_dir, fixed("/"), save_name, " succesfully saved"))
     }
 
-    if(exists("finished_plot_woLegend")) {
-    return(list(finished_plot, finished_plot_woLegend, legend))}
+    if (exists("finished_plot_woLegend")) {
+      return(list(finished_plot, finished_plot_woLegend, legend))
+    }
 
     return(list(finished_plot))
-
   }
 
 
@@ -1097,19 +1136,19 @@ create_plot <-
 
 box_plot <-
   function(IV_list = NULL,
-           summary_list = NULL ,
-           column_list = NULL ,
-           peak_list = NULL ,
-           series_vector = NULL ,
+           summary_list = NULL,
+           column_list = NULL,
+           peak_list = NULL,
+           series_vector = NULL,
            ylab = NULL,
            measurement_name = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
            legend_seperate = FALSE,
            spacer_plot = FALSE,
@@ -1127,49 +1166,53 @@ box_plot <-
         jittersize = jittersize,
         ...
       )
-    if (!is.null(used_fontsize))
+    if (!is.null(used_fontsize)) {
       if (!is.null(used_font)) {
         boxplot <-
-          change_plot_theme(boxplot,
-                            used_theme(used_fontsize, used_fontsize, used_font))
+          change_plot_theme(
+            boxplot,
+            used_theme(used_fontsize, used_fontsize, used_font)
+          )
       } else {
         boxplot <-
           change_plot_theme(boxplot, used_theme(used_fontsize, used_fontsize))
       }
-    else {
-      if (!is.null(used_theme))
-        boxplot <-  change_plot_theme(boxplot, used_theme())
-
+    } else {
+      if (!is.null(used_theme)) {
+        boxplot <- change_plot_theme(boxplot, used_theme())
+      }
     }
 
-    if (!is.null(used_colors))
+    if (!is.null(used_colors)) {
       boxplot <-
         change_boxplot_color_fill_manuel(boxplot, rep(used_colors[1:length(summary_list)], length(column_list[[1]])), 1)
+    }
 
 
     finished_plot <- boxplot
     detach("package:latex2exp", unload = TRUE)
     library(latex2exp)
-    if (!is.null(ylab))
+    if (!is.null(ylab)) {
       finished_plot <- finished_plot + ylab(ylab)
+    }
     return(finished_plot)
   }
 
 ratio_plot <-
   function(IV_list = NULL,
-           summary_list = NULL ,
-           column_list = NULL ,
-           peak_list = NULL ,
-           series_vector = NULL ,
+           summary_list = NULL,
+           column_list = NULL,
+           peak_list = NULL,
+           series_vector = NULL,
            ylab = NULL,
            measurement_name = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
            legend_seperate = FALSE,
            spacer_plot = FALSE,
@@ -1187,124 +1230,133 @@ ratio_plot <-
         jittersize = jittersize,
         ...
       )
-    if (!is.null(used_fontsize))
+    if (!is.null(used_fontsize)) {
       if (!is.null(used_font)) {
         ratioplot <-
-          change_plot_theme(ratioplot,
-                            used_theme(used_fontsize, used_fontsize , used_font))
+          change_plot_theme(
+            ratioplot,
+            used_theme(used_fontsize, used_fontsize, used_font)
+          )
       } else {
         ratioplot <-
           change_plot_theme(ratioplot, used_theme(used_fontsize, used_fontsize))
       }
-    else {
-      if (!is.null(used_theme))
-        ratioplot <-  change_plot_theme(boxplot, used_theme())
-
+    } else {
+      if (!is.null(used_theme)) {
+        ratioplot <- change_plot_theme(boxplot, used_theme())
+      }
     }
 
-    if (!is.null(used_colors))
+    if (!is.null(used_colors)) {
       ratioplot <-
-        change_boxplot_color_fill_manuel(ratioplot,  rep(used_colors[1:length(summary_list)], each = length(peak_list[[1]][[1]])), 1)
+        change_boxplot_color_fill_manuel(ratioplot, rep(used_colors[1:length(summary_list)], each = length(peak_list[[1]][[1]])), 1)
+    }
     finished_plot <- ratioplot
     detach("package:latex2exp", unload = TRUE)
     library(latex2exp)
-    if (!is.null(ylab))
+    if (!is.null(ylab)) {
       finished_plot <- finished_plot + ylab(ylab)
+    }
     return(finished_plot)
   }
 
 
 single_plot <-
   function(IV_list = NULL,
-           column_list = NULL ,
+           column_list = NULL,
            measurement_name = NULL,
            ylab = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
-           save_dir = NULL ,
+           save_dir = NULL,
            legend_seperate = FALSE,
            spacer_plot = FALSE,
            size = NULL,
            jittersize = NULL,
            overrideYlim = NULL,
            ...) {
-    if (length(measurement_name) != length(IV_list))
+    if (length(measurement_name) != length(IV_list)) {
       measurement_name <- names(IV_list)
+    }
 
 
     single_plot <-
-      create_single_plot(IV_list[[1]], column_list,  first(measurement_name), linesize = linesize)
+      create_single_plot(IV_list[[1]], column_list, first(measurement_name), linesize = linesize)
     if (length(IV_list) > 1) {
       for (i in 2:length(measurement_name)) {
         single_plot <-
           add_to_single_plot(single_plot,
-                             IV_list[[i]],
-                             column_list,
-                             measurement_name[[i]],
-                             linesize = linesize)
+            IV_list[[i]],
+            column_list,
+            measurement_name[[i]],
+            linesize = linesize
+          )
       }
     }
 
 
-    if (!is.null(used_fontsize))
+    if (!is.null(used_fontsize)) {
       if (!is.null(used_font)) {
         single_plot <-
-          change_plot_theme(single_plot,
-                            used_theme(used_fontsize, used_fontsize , used_font))
+          change_plot_theme(
+            single_plot,
+            used_theme(used_fontsize, used_fontsize, used_font)
+          )
       } else {
         single_plot <-
           change_plot_theme(single_plot, used_theme(used_fontsize, used_fontsize))
       }
-    else {
-      if (!is.null(used_theme))
+    } else {
+      if (!is.null(used_theme)) {
         single_plot <-
           change_plot_theme(single_plot, used_theme())
-
+      }
     }
 
-    if (!is.null(used_colors))
+    if (!is.null(used_colors)) {
       single_plot <-
-      change_plot_color_fill_manuel(single_plot , measurement_name, used_colors[1:length(measurement_name)], 1)
+        change_plot_color_fill_manuel(single_plot, measurement_name, used_colors[1:length(measurement_name)], 1)
+    }
 
-    if (!is.null(used_axis_function))
+    if (!is.null(used_axis_function)) {
       single_plot <-
-      used_axis_function(single_plot, linesize, overrideYlim = overrideYlim, ...)
+        used_axis_function(single_plot, linesize, overrideYlim = overrideYlim, ...)
+    }
 
     finished_plot <- single_plot
 
     detach("package:latex2exp", unload = TRUE)
     library(latex2exp)
-    if (!is.null(ylab))
+    if (!is.null(ylab)) {
       finished_plot <- finished_plot + ylab(ylab)
+    }
     return(finished_plot)
-
-
   }
 
 
 mat_plot <-
   function(IV_list = NULL,
-           summary_list = NULL ,
-           column_list = NULL ,
-           peak_list = NULL ,
-           series_vector = NULL ,
+           summary_list = NULL,
+           column_list = NULL,
+           peak_list = NULL,
+           series_vector = NULL,
            measurement_name = NULL,
            ylab = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
-           save_dir = NULL ,
+           save_dir = NULL,
            legend_seperate = FALSE,
            spacer_plot = FALSE,
            size = NULL,
@@ -1315,64 +1367,73 @@ mat_plot <-
            xends2 = c(-100, 100),
            ...) {
     if (is.null(measurement_name) &&
-        !is.null(series_vector))
+      !is.null(series_vector)) {
       measurement_name <- series_vector
+    }
 
-    if (!is.null(series_vector))
-    {
+    if (!is.null(series_vector)) {
       mat_plot <-
-        create_matplot(IV_list[[series_vector[[1]]]],
-                       column_list,
-                       peak_list[[1]],
-                       measurement_name[[1]],
-                       "",
-                       "",
-                       linesize)
+        create_matplot(
+          IV_list[[series_vector[[1]]]],
+          column_list,
+          peak_list[[1]],
+          measurement_name[[1]],
+          "",
+          "",
+          linesize
+        )
       if (length(series_vector) > 1) {
         for (i in 2:length(series_vector)) {
           mat_plot <-
-            add_to_matplot(mat_plot,
-                           IV_list[[series_vector[[i]]]],
-                           column_list,
-                           peak_list[[i]],
-                           measurement_name[[i]],
-                           linesize)
-
+            add_to_matplot(
+              mat_plot,
+              IV_list[[series_vector[[i]]]],
+              column_list,
+              peak_list[[i]],
+              measurement_name[[i]],
+              linesize
+            )
         }
       }
     }
 
-    if (is.null(series_vector))
+    if (is.null(series_vector)) {
       mat_plot <-
-        create_matplot(IV_list,
-                       column_list,
-                       peak_list,
-                       measurement_name,
-                       "",
-                       "",
-                       linesize)
+        create_matplot(
+          IV_list,
+          column_list,
+          peak_list,
+          measurement_name,
+          "",
+          "",
+          linesize
+        )
+    }
 
 
-    if (!is.null(used_fontsize))
+    if (!is.null(used_fontsize)) {
       if (!is.null(used_font)) {
         mat_plot <-
-          change_plot_theme(mat_plot,
-                            used_theme(used_fontsize, used_fontsize , used_font))
+          change_plot_theme(
+            mat_plot,
+            used_theme(used_fontsize, used_fontsize, used_font)
+          )
       } else {
         mat_plot <-
           change_plot_theme(mat_plot, used_theme(used_fontsize, used_fontsize))
       }
-    else {
-      if (!is.null(used_theme))
-        mat_plot <-  change_plot_theme(mat_plot, used_theme())
-
+    } else {
+      if (!is.null(used_theme)) {
+        mat_plot <- change_plot_theme(mat_plot, used_theme())
+      }
     }
 
-    if (!is.null(used_colors))
+    if (!is.null(used_colors)) {
       mat_plot <-
-        change_plot_color_fill_manuel(mat_plot , measurement_name, used_colors[1:length(measurement_name)], 1)
+        change_plot_color_fill_manuel(mat_plot, measurement_name, used_colors[1:length(measurement_name)], 1)
+    }
 
-    if (!is.null(used_axis_function))
+    if (!is.null(used_axis_function)) {
       mat_plot <-
         used_axis_function(
           mat_plot,
@@ -1382,35 +1443,37 @@ mat_plot <-
           xend1 = xend1,
           xends2 = xends2
         )
+    }
 
     finished_plot <- mat_plot
     detach("package:latex2exp", unload = TRUE)
     library(latex2exp)
-    if (!is.null(ylab))
+    if (!is.null(ylab)) {
       finished_plot <- finished_plot + ylab(ylab)
+    }
     return(finished_plot)
   }
 
 
 median_plot <-
   function(IV_list = NULL,
-           summary_list = NULL ,
-           column_list = NULL ,
-           peak_list = NULL ,
-           series_vector = NULL ,
+           summary_list = NULL,
+           column_list = NULL,
+           peak_list = NULL,
+           series_vector = NULL,
            measurement_name = NULL,
            ylab = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
            SD_MAD = NULL,
            SD_MAD_shadow_direction = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
-           save_dir = NULL ,
+           save_dir = NULL,
            legend_seperate = FALSE,
            spacer_plot = FALSE,
            size = NULL,
@@ -1421,15 +1484,16 @@ median_plot <-
            xends2 = c(-100, 100),
            ...) {
     if (is.null(measurement_name) &&
-        !is.null(series_vector))
+      !is.null(series_vector)) {
       measurement_name <- series_vector
+    }
 
-    if (length(measurement_name) < length(series_vector))
+    if (length(measurement_name) < length(series_vector)) {
       measurement_name <- series_vector
+    }
 
 
-    if (!is.null(series_vector))
-    {
+    if (!is.null(series_vector)) {
       median_plot <-
         create_median_plot(
           IV_list[[series_vector[[1]]]],
@@ -1455,12 +1519,11 @@ median_plot <-
               SD_MAD,
               SD_MAD_shadow_direction[[i]]
             )
-
         }
       }
     }
 
-    if (is.null(series_vector))
+    if (is.null(series_vector)) {
       median_plot <-
         create_median_plot(
           IV_list,
@@ -1473,29 +1536,33 @@ median_plot <-
           SD_MAD,
           SD_MAD_shadow_direction
         )
+    }
 
 
-    if (!is.null(used_fontsize))
+    if (!is.null(used_fontsize)) {
       if (!is.null(used_font)) {
         median_plot <-
-          change_plot_theme(median_plot,
-                            used_theme(used_fontsize, used_fontsize , used_font))
+          change_plot_theme(
+            median_plot,
+            used_theme(used_fontsize, used_fontsize, used_font)
+          )
       } else {
         median_plot <-
           change_plot_theme(median_plot, used_theme(used_fontsize, used_fontsize))
       }
-    else {
-      if (!is.null(used_theme))
+    } else {
+      if (!is.null(used_theme)) {
         median_plot <-
           change_plot_theme(median_plot, used_theme())
-
+      }
     }
 
-    if (!is.null(used_colors))
+    if (!is.null(used_colors)) {
       median_plot <-
-        change_plot_color_fill_manuel(median_plot , measurement_name, used_colors[1:length(measurement_name)], 1)
+        change_plot_color_fill_manuel(median_plot, measurement_name, used_colors[1:length(measurement_name)], 1)
+    }
 
-    if (!is.null(used_axis_function))
+    if (!is.null(used_axis_function)) {
       median_plot <-
         used_axis_function(
           median_plot,
@@ -1505,35 +1572,37 @@ median_plot <-
           xend1 = xend1,
           xends2 = xends2
         )
+    }
 
 
     finished_plot <- median_plot
     detach("package:latex2exp", unload = TRUE)
     library(latex2exp)
-    if (!is.null(ylab))
+    if (!is.null(ylab)) {
       finished_plot <- finished_plot + ylab(ylab)
+    }
     return(finished_plot)
   }
 
 p_plot <-
   function(IV_list = NULL,
-           summary_list = NULL ,
-           column_list = NULL ,
-           peak_list = NULL ,
-           series_vector = NULL ,
+           summary_list = NULL,
+           column_list = NULL,
+           peak_list = NULL,
+           series_vector = NULL,
            measurement_name = NULL,
            ylab = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
            SD_MAD = NULL,
            SD_MAD_shadow_direction = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
-           save_dir = NULL ,
+           save_dir = NULL,
            legend_seperate = FALSE,
            spacer_plot = FALSE,
            size = NULL,
@@ -1547,10 +1616,11 @@ p_plot <-
            xend1 = -104,
            xends2 = c(-100, 100),
            ...) {
-    #####Medianplot of P-Plot#####
+    ##### Medianplot of P-Plot#####
     if (is.null(measurement_name) &&
-        !is.null(series_vector))
+      !is.null(series_vector)) {
       measurement_name <- series_vector
+    }
 
 
     median_plot <-
@@ -1578,40 +1648,43 @@ p_plot <-
             SD_MAD,
             SD_MAD_shadow_direction[[i]]
           )
-
       }
     }
 
-    if (!is.null(used_fontsize))
+    if (!is.null(used_fontsize)) {
       if (!is.null(used_font)) {
         median_plot <-
-          change_plot_theme(median_plot,
-                            used_theme[[1]](used_fontsize, used_fontsize , used_font))
+          change_plot_theme(
+            median_plot,
+            used_theme[[1]](used_fontsize, used_fontsize, used_font)
+          )
       } else {
         median_plot <-
           change_plot_theme(median_plot, used_theme[[1]](used_fontsize, used_fontsize))
       }
-    else {
-      if (!is.null(used_theme[[1]]))
+    } else {
+      if (!is.null(used_theme[[1]])) {
         median_plot <-
           change_plot_theme(median_plot, used_theme[[1]]())
-
+      }
     }
 
-    if (!is.null(used_colors))
+    if (!is.null(used_colors)) {
       median_plot <-
-      change_plot_color_fill_manuel(median_plot , measurement_name, used_colors[1:length(measurement_name)], 1)
+        change_plot_color_fill_manuel(median_plot, measurement_name, used_colors[1:length(measurement_name)], 1)
+    }
 
-    if (!is.null(used_axis_function))
+    if (!is.null(used_axis_function)) {
       median_plot <-
-      used_axis_function[[1]](
-        median_plot,
-        linesize,
-        overrideYlim = overrideYlim,
-        xlims = xlims,
-        xend1 = xend1,
-        xends2 = xends2
-      )
+        used_axis_function[[1]](
+          median_plot,
+          linesize,
+          overrideYlim = overrideYlim,
+          xlims = xlims,
+          xend1 = xend1,
+          xends2 = xends2
+        )
+    }
 
     detach("package:latex2exp", unload = TRUE)
     library(latex2exp)
@@ -1619,10 +1692,11 @@ p_plot <-
     median_plot <-
       median_plot + theme(axis.title.x = element_blank())
 
-    if (!is.null(ylab))
+    if (!is.null(ylab)) {
       median_plot <- median_plot + ylab(ylab)
+    }
 
-    #####P-Plot Part#####
+    ##### P-Plot Part#####
     if (kruskal == T) {
       p_plot <-
         create_p_area_plot(
@@ -1637,34 +1711,38 @@ p_plot <-
         )
 
 
-      if (!is.null(used_fontsize))
+      if (!is.null(used_fontsize)) {
         if (!is.null(used_font)) {
           p_plot <-
-            change_plot_theme(p_plot,
-                              used_theme[[2]](used_fontsize, used_fontsize , used_font))
+            change_plot_theme(
+              p_plot,
+              used_theme[[2]](used_fontsize, used_fontsize, used_font)
+            )
         } else {
           p_plot <-
             change_plot_theme(p_plot, used_theme[[2]](used_fontsize, used_fontsize))
         }
-      else {
-        if (!is.null(p_plot))
+      } else {
+        if (!is.null(p_plot)) {
           p_plot <-
             change_plot_theme(p_plot, used_theme[[2]]())
-
+        }
       }
-      if (!is.null(used_colors))
+      if (!is.null(used_colors)) {
         p_plot <-
           p_plot + scale_fill_manual(
             breaks = "Kruskal",
             values = used_colors[1],
             aesthetics = c("colour", "fill")
           )
-      if (!is.null(used_axis_function))
+      }
+      if (!is.null(used_axis_function)) {
         p_plot <-
           used_axis_function[[2]](p_plot,
-                                  xlims = xlims,
-                                  xend1 = xend1,
-                                  xends2 = xends2)
+            xlims = xlims,
+            xend1 = xend1,
+            xends2 = xends2)
+      }
 
 
 
@@ -1678,16 +1756,19 @@ p_plot <-
       if (spacer_plot == T) {
         spacer_plots <- rep(list(p_plot), 6 - length(series_vector))
 
-        if (6 - length(series_vector) > 0)
+        if (6 - length(series_vector) > 0) {
           p_plot <-
             wrap_plots(c(p_plot, spacer_plots), ncol = 1)
-      }
-      else
+        }
+      } else {
         p_plot <- wrap_plots(p_plot, ncol = 1)
+      }
 
       comp_plot <-
-        median_plot  / p_plot + plot_layout(ncol = 1,
-                                            heights = c(1, ratio_Median_P_plot))
+        median_plot / p_plot + plot_layout(
+          ncol = 1,
+          heights = c(1, ratio_Median_P_plot)
+        )
 
       finished_plot <- comp_plot
 
@@ -1711,38 +1792,40 @@ p_plot <-
           ...
         )
 
-      if (!is.null(used_fontsize))
+      if (!is.null(used_fontsize)) {
         if (!is.null(used_font)) {
           p_plot[[i - 1]] <-
-            change_plot_theme(p_plot[[i - 1]],
-                              used_theme[[2]](used_fontsize, used_fontsize , used_font))
+            change_plot_theme(
+              p_plot[[i - 1]],
+              used_theme[[2]](used_fontsize, used_fontsize, used_font)
+            )
         } else {
           p_plot[[i - 1]] <-
             change_plot_theme(p_plot[[i - 1]], used_theme[[2]](used_fontsize, used_fontsize))
         }
-      else {
-        if (!is.null(p_plot[[i - 1]]))
+      } else {
+        if (!is.null(p_plot[[i - 1]])) {
           p_plot[[i - 1]] <-
             change_plot_theme(p_plot[[i - 1]], used_theme[[2]]())
-
+        }
       }
-      if (!is.null(used_colors))
+      if (!is.null(used_colors)) {
         p_plot[[i - 1]] <-
           p_plot[[i - 1]] + scale_fill_manual(
             breaks = measurement_name[i],
             values = used_colors[i],
             aesthetics = c("colour", "fill")
           )
-      if (!is.null(used_axis_function))
+      }
+      if (!is.null(used_axis_function)) {
         p_plot[[i - 1]] <-
           used_axis_function[[2]](p_plot[[i - 1]],
-                                  xlims = xlims,
-                                  xend1 = xend1,
-                                  xends2 = xends2)
-
-
+            xlims = xlims,
+            xend1 = xend1,
+            xends2 = xends2)
+      }
     }
-    p_plot[[length(p_plot)]]  <-
+    p_plot[[length(p_plot)]] <-
       p_plot[[length(p_plot)]] + theme(axis.title.x = element_text()) + scale_x_continuous(
         name = "Potential (mV)",
         limits = xlims,
@@ -1754,15 +1837,18 @@ p_plot <-
     if (spacer_plot == T) {
       spacer_plots <-
         rep(list(p_plot[[1]]), n_spacer - length(series_vector))
-      if (n_spacer - length(series_vector) > 0)
+      if (n_spacer - length(series_vector) > 0) {
         p_plot <- wrap_plots(c(p_plot, spacer_plots), ncol = 1)
-    }
-    else
+      }
+    } else {
       p_plot <- wrap_plots(p_plot, ncol = 1)
+    }
 
     comp_plot <-
-      median_plot  / p_plot + plot_layout(ncol = 1,
-                                          heights = c(1, ratio_Median_P_plot))
+      median_plot / p_plot + plot_layout(
+        ncol = 1,
+        heights = c(1, ratio_Median_P_plot)
+      )
 
     finished_plot <- comp_plot
 
@@ -1775,23 +1861,23 @@ p_plot <-
 
 complete_plot <-
   function(IV_list = NULL,
-           summary_list = NULL ,
-           column_list = NULL ,
-           peak_list = NULL ,
-           series_vector = NULL ,
+           summary_list = NULL,
+           column_list = NULL,
+           peak_list = NULL,
+           series_vector = NULL,
            ylab = NULL,
            measurement_name = NULL,
            display_N_legend = NULL,
            display_N_legend_divisor = NULL,
            SD_MAD = NULL,
            SD_MAD_shadow_direction = NULL,
-           used_theme = NULL ,
-           used_axis_function = NULL ,
-           used_font = NULL ,
-           used_fontsize = NULL ,
-           linesize = NULL ,
+           used_theme = NULL,
+           used_axis_function = NULL,
+           used_font = NULL,
+           used_fontsize = NULL,
+           linesize = NULL,
            used_colors = NULL,
-           save_dir = NULL ,
+           save_dir = NULL,
            legend_seperate = FALSE,
            spacer_plot = FALSE,
            size = NULL,
@@ -2088,7 +2174,5 @@ complete_plot <-
     #
     # finished_plot <- comp_plot
 
-    #return(finished_plot)
-
-
+    # return(finished_plot)
   }

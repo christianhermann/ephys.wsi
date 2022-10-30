@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @examples create_matplot(IV_list = IV_list$hTRPC6, column = "normalized_slopeConductance",
-#' filter = "OAG", measurement = "TRPC6 OAG", ylab = "Slope", title  ="Comparision C6 C5)
+#' filter = "OAG", measurement = "TRPC6 OAG", ylab = "Slope", title  ="Comparision C6 C5")
 create_matplot <-
   function(IV_list,
            column,
@@ -84,7 +84,7 @@ add_to_matplot <-
 #' @export
 #'
 #' @examples create_median_plot(IV_list = IV_list$hTRPC6, column = "normalized_slopeConductance",
-#' filter = "OAG", measurement = "TRPC6 OAG", ylab = "Slope", title  ="Comparision C6 C5)
+#' filter = "OAG", measurement = "TRPC6 OAG", ylab = "Slope", title  ="Comparision C6 C5")
 create_median_plot <-
   function(IV_list,
            column,
@@ -178,7 +178,7 @@ add_to_median_plot <-
 #'
 #' @examples create_single_plot(IV_tbl =
 #' IV_list$hTRPC6$hTRPC6_pIRES2_EGFP_519_B1P16_OAG_100(3)_Bef,
-#' measurement = "TRPC6 OAG 100(3)", ylab = "IV", title  ="Comparision C6 C5)
+#' measurement = "TRPC6 OAG 100(3)", ylab = "IV", title  ="Comparision C6 C5")
 create_single_plot <-
   function(IV_tbl,
            column,

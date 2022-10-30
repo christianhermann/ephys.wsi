@@ -5,13 +5,11 @@
 #'
 #' @examples
 prepare_packages <- function(libpath = NULL) {
-
-  if(!require(checkpoint)) install.packages("checkpoint")
-  if(!require(checkpoint)) install.packages("checkpoint")
+  if (!require(checkpoint)) install.packages("checkpoint")
+  if (!require(checkpoint)) install.packages("checkpoint")
 
   checkpoint("2022-04-07", scanForPackages = F)
   check_packages(
-
     c(
       "dplyr",
       "tidyverse",
@@ -38,8 +36,8 @@ prepare_packages <- function(libpath = NULL) {
       "Cairo",
       "gridExtra",
       "gWidgets2tcltk",
-      "ggpubr"),
-
+      "ggpubr"
+    ),
     libpath
   )
 }
