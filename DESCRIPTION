@@ -1,0 +1,14 @@
+Package: ephys.WSI
+Title: Analyse, evaluate and create some cool plots using ephys data. Best used together with DetectIVe! 
+Version: 2.1.3
+Authors@R: 
+    person(given = "Christian",
+           family = "Hermann",
+           role = c("aut", "cre"),
+           email = "christian.hermann@lrz.uni-muenchen.de",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Read in .asc data from HEKA measurements. Calculate the current density, CDmax, CDmin, Ratios, slope Conductance and more. Create statistics. Then plot them using ggplot2 based plots.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
