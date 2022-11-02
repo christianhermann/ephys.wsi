@@ -1700,7 +1700,7 @@ p_plot <-
     if (kruskal == T) {
       p_plot <-
         create_p_area_plot(
-          IV_list,
+          map(series_vector, function(x,y) y[[x]], IV_list),
           "Kruskal",
           column_list,
           peak_list,
@@ -1789,6 +1789,7 @@ p_plot <-
           c(peak_list[1], peak_list[i]),
           "P-Value",
           "",
+          paired = paired,
           ...
         )
 
