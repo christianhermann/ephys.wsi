@@ -1750,7 +1750,8 @@ p_plot <-
         p_plot + theme(axis.title.x = element_text()) + scale_x_continuous(
           limits = xlims,
           minor_breaks = seq(xends2[1], xends2[2], 10),
-          expand = c(0, 0)
+          expand = c(0, 0),
+          name = paste0("Potential (", settings_envir$voltage_unit, ")")
         )
 
       if (spacer_plot == T) {
@@ -1828,10 +1829,10 @@ p_plot <-
     }
     p_plot[[length(p_plot)]] <-
       p_plot[[length(p_plot)]] + theme(axis.title.x = element_text()) + scale_x_continuous(
-        name = "Potential (mV)",
         limits = xlims,
         minor_breaks = seq(xends2[1], xends2[2], 10),
-        expand = c(0, 0)
+        expand = c(0, 0),
+        name = paste0("Potential (", settings_envir$voltage_unit, ")")
       )
 
 
