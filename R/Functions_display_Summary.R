@@ -1,3 +1,5 @@
+####Functions to display summary data
+
 #' prepares data for a boxplot; column-list should be in the same format as the output of peak_addition
 #'
 #' @param summary_list

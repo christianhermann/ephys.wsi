@@ -1,4 +1,4 @@
-#' Title
+#' Wrapper function to check if packages exists and if not to unstall them from the minicran ==> Outdated since checkpoint
 #'
 #' @param pkg
 #'
@@ -549,7 +549,7 @@ fit_smoothing_spline <- function(v_DataY, v_DataX, spar) {
   return(fit)
 }
 
-#' Title
+#' fits a weighted smoothing spline
 #'
 #' @param v_DataY
 #' @param v_DataX
@@ -665,271 +665,271 @@ fit_cobs_smoothing_spline_tbl <- function(tbl, x_name, y_name, reversePot) {
   return(as.numeric(fit$fitted))
 }
 
-
-smoothing_spline_fit_test <-
-  function(tbl, spar_start, spar_finish, spar_step) {
-    means <- c()
-    RMSEs <- c()
-    ftests <- c()
-    for (i in (seq(spar_start, spar_finish, spar_step))) {
-      fit <-
-        fit_smoothing_spline(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
-      # fit <-
-      #   fit_smoothing_spline(fit$y, fit$x, 0.7)
-      rsq__m <- rsq_(fit$y, tbl$normalized_CurrentDensity)
-      # rsq__ <- create_model_rsq__mean(rsq__m)
-      RMSE <- rmse(fit$y, tbl$normalized_CurrentDensity)
-      means <- c(means, rsq__m)
-      RMSEs <- c(RMSEs, RMSE)
-      ftest <-
-        as.numeric(var.test(fit$y, tbl$normalized_CurrentDensity)[[1]])
-      ftests <- c(ftests, ftest)
-      #   png(paste0("mC6_Bef_Outward", i, ".png"))
-      plot(
-        tbl$"Potential[V]",
-        tbl$normalized_CurrentDensity,
-        type = "l",
-        main = paste0(
-          "Degree: ",
-          i,
-          ": R² =",
-          round(rsq__m, 6),
-          " RMSE  = ",
-          round(RMSE, 6)
-        ),
-        ylab = "normalized Current Density",
-        xlab = "Potential [V]",
-        lwd = 2,
-        cex.axis = 1.5,
-        cex.main = 1.5,
-        cex.lab = 1.5
-      )
-      lines(
-        tbl$"Potential[V]",
-        fit$y,
-        type = "l",
-        col = "green",
-        lwd = 2
-      )
-      legend("topleft", c("normed IV", "model"), fill = c("black", "green"))
-      #    dev.off()
-    }
-    return(c(means, RMSEs, ftests))
-  }
-
-
-smoothing_spline_check_plots <-
-  function(IV_list, spar_start, spar_fin, spar_step) {
-    vals <-
-      map_depth(
-        IV_list,
-        2,
-        smoothing_spline_fit_test,
-        spar_start,
-        spar_fin,
-        spar_step
-      )
-    flatVals <- flatten(vals)
-    bindVals <- bind_rows(flatVals)
-    means <- rowMeans(bindVals)
-
-    plot(
-      seq(spar_start, spar_fin, spar_step),
-      means[23:33],
-      type = "b",
-      lty = 1,
-      ylab = "P ftest",
-      xlab = "spar",
-      main = paste0(
-        "Vergleich: FTest smoothing-spline; ",
-        ncol(bindVals),
-        " Messungen TRPC 4/5/6"
-      ),
-      cex = 1,
-      lwd = 2,
-      cex.axis = 1.5,
-      cex.main = 1.5,
-      cex.lab = 1.5
-    )
-    plot(
-      seq(spar_start, spar_fin, spar_step),
-      means[12:22],
-      type = "b",
-      lty = 1,
-      ylab = "RMSE",
-      xlab = "spar",
-      main = paste0(
-        "Vergleich: RMSE smoothing-spline; ",
-        ncol(bindVals),
-        " Messungen TRPC 4/5/6"
-      ),
-      cex = 1,
-      lwd = 2,
-      cex.axis = 1.5,
-      cex.main = 1.5,
-      cex.lab = 1.5
-    )
-    plot(
-      seq(spar_start, spar_fin, spar_step),
-      means[1:11],
-      type = "b",
-      lty = 1,
-      ylab = "R²",
-      xlab = "spar",
-      main = paste0(
-        "Vergleich: R² smoothing-spline; ",
-        ncol(bindVals),
-        " Messungen TRPC5/6"
-      ),
-      cex = 1,
-      lwd = 2,
-      cex.axis = 1.5,
-      cex.main = 1.5,
-      cex.lab = 1.5
-    )
-  }
-
-
-
-
-
-
-fit_supsmu <- function(v_DataY, v_DataX, span) {
-  fit <-
-    supsmu(v_DataX, v_DataY, span = span)
-  return(fit)
-}
-
-
-fit_supsmu_tbl <- function(tbl, x_name, y_name, span) {
-  check_tibble(tbl)
-  if (!x_name %in% colnames(tbl)) {
-    stop(paste0(x_name, "not found in tibble"))
-  }
-  if (!y_name %in% colnames(tbl)) {
-    stop(paste0(x_name, "not found in tibble"))
-  }
-  check_number(span)
-  fit <- supsmu(pull(tbl, y_name), pull(tbl, x_name), span)
-  return(as.numeric(fit$y))
-}
-
-
-
-supsmu_fit_test <-
-  function(tbl, span_start, span_finish, span_step) {
-    means <- c()
-    RMSEs <- c()
-    ftests <- c()
-    for (i in (seq(span_start, span_finish, span_step))) {
-      fit <-
-        fit_supsmu(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
-      rsq__m <- rsq_(fit$y, tbl$normalized_CurrentDensity)
-      # rsq__ <- create_model_rsq__mean(rsq__m)
-      RMSE <- rmse(fit$y, tbl$normalized_CurrentDensity)
-      means <- c(means, rsq__m)
-      RMSEs <- c(RMSEs, RMSE)
-      ftest <-
-        as.numeric(var.test(fit$y, tbl$normalized_CurrentDensity)[3])
-      ftests <- c(ftests, ftest)
-      #   png(paste0("mC6_Bef_Outward", i, ".png"))
-      plot(
-        tbl$"Potential[V]",
-        tbl$normalized_CurrentDensity,
-        type = "l",
-        main = paste0(
-          "Degree: ",
-          i,
-          ": R² =",
-          round(rsq__m, 6),
-          " RMSE  = ",
-          round(RMSE, 6)
-        ),
-        ylab = "normalized Current Density",
-        xlab = "Potential [V]",
-        lwd = 2,
-        cex.axis = 1.5,
-        cex.main = 1.5,
-        cex.lab = 1.5
-      )
-      lines(
-        tbl$"Potential[V]",
-        fit$y,
-        type = "l",
-        col = "green",
-        lwd = 2
-      )
-      legend("topleft", c("normed IV", "model"), fill = c("black", "green"))
-      # dev.off()
-    }
-    return(c(means, RMSEs, ftests))
-  }
-
-
-supsmu_check_plots <-
-  function(IV_list, spar_start, spar_fin, spar_step) {
-    vals <-
-      map_depth(IV_list, 2, supsmu_fit_test, spar_start, spar_fin, spar_step)
-    flatVals <- flatten(vals)
-    bindVals <- bind_rows(flatVals)
-    means <- rowMeans(bindVals)
-
-    plot(
-      seq(spar_start, spar_fin, spar_step),
-      means[43:63],
-      type = "b",
-      lty = 1,
-      ylab = "P ftest",
-      xlab = "spar",
-      main = paste0(
-        "Vergleich: FTest smoothing-spline; ",
-        ncol(bindVals),
-        " Messungen TRPC 4/5/6"
-      ),
-      cex = 1,
-      lwd = 2,
-      cex.axis = 1.5,
-      cex.main = 1.5,
-      cex.lab = 1.5
-    )
-    plot(
-      seq(spar_start, spar_fin, spar_step),
-      means[22:42],
-      type = "b",
-      lty = 1,
-      ylab = "RMSE",
-      xlab = "spar",
-      main = paste0(
-        "Vergleich: RMSE smoothing-spline; ",
-        ncol(bindVals),
-        " Messungen TRPC 4/5/6"
-      ),
-      cex = 1,
-      lwd = 2,
-      cex.axis = 1.5,
-      cex.main = 1.5,
-      cex.lab = 1.5
-    )
-    plot(
-      seq(spar_start, spar_fin, spar_step),
-      means[1:21],
-      type = "b",
-      lty = 1,
-      ylab = "R²",
-      xlab = "spar",
-      main = paste0(
-        "Vergleich: R² smoothing-spline; ",
-        ncol(bindVals),
-        " Messungen TRPC5/6"
-      ),
-      cex = 1,
-      lwd = 2,
-      cex.axis = 1.5,
-      cex.main = 1.5,
-      cex.lab = 1.5
-    )
-  }
-
+#
+# smoothing_spline_fit_test <-
+#   function(tbl, spar_start, spar_finish, spar_step) {
+#     means <- c()
+#     RMSEs <- c()
+#     ftests <- c()
+#     for (i in (seq(spar_start, spar_finish, spar_step))) {
+#       fit <-
+#         fit_smoothing_spline(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
+#       # fit <-
+#       #   fit_smoothing_spline(fit$y, fit$x, 0.7)
+#       rsq__m <- rsq_(fit$y, tbl$normalized_CurrentDensity)
+#       # rsq__ <- create_model_rsq__mean(rsq__m)
+#       RMSE <- rmse(fit$y, tbl$normalized_CurrentDensity)
+#       means <- c(means, rsq__m)
+#       RMSEs <- c(RMSEs, RMSE)
+#       ftest <-
+#         as.numeric(var.test(fit$y, tbl$normalized_CurrentDensity)[[1]])
+#       ftests <- c(ftests, ftest)
+#       #   png(paste0("mC6_Bef_Outward", i, ".png"))
+#       plot(
+#         tbl$"Potential[V]",
+#         tbl$normalized_CurrentDensity,
+#         type = "l",
+#         main = paste0(
+#           "Degree: ",
+#           i,
+#           ": R² =",
+#           round(rsq__m, 6),
+#           " RMSE  = ",
+#           round(RMSE, 6)
+#         ),
+#         ylab = "normalized Current Density",
+#         xlab = "Potential [V]",
+#         lwd = 2,
+#         cex.axis = 1.5,
+#         cex.main = 1.5,
+#         cex.lab = 1.5
+#       )
+#       lines(
+#         tbl$"Potential[V]",
+#         fit$y,
+#         type = "l",
+#         col = "green",
+#         lwd = 2
+#       )
+#       legend("topleft", c("normed IV", "model"), fill = c("black", "green"))
+#       #    dev.off()
+#     }
+#     return(c(means, RMSEs, ftests))
+#   }
+#
+#
+# smoothing_spline_check_plots <-
+#   function(IV_list, spar_start, spar_fin, spar_step) {
+#     vals <-
+#       map_depth(
+#         IV_list,
+#         2,
+#         smoothing_spline_fit_test,
+#         spar_start,
+#         spar_fin,
+#         spar_step
+#       )
+#     flatVals <- flatten(vals)
+#     bindVals <- bind_rows(flatVals)
+#     means <- rowMeans(bindVals)
+#
+#     plot(
+#       seq(spar_start, spar_fin, spar_step),
+#       means[23:33],
+#       type = "b",
+#       lty = 1,
+#       ylab = "P ftest",
+#       xlab = "spar",
+#       main = paste0(
+#         "Vergleich: FTest smoothing-spline; ",
+#         ncol(bindVals),
+#         " Messungen TRPC 4/5/6"
+#       ),
+#       cex = 1,
+#       lwd = 2,
+#       cex.axis = 1.5,
+#       cex.main = 1.5,
+#       cex.lab = 1.5
+#     )
+#     plot(
+#       seq(spar_start, spar_fin, spar_step),
+#       means[12:22],
+#       type = "b",
+#       lty = 1,
+#       ylab = "RMSE",
+#       xlab = "spar",
+#       main = paste0(
+#         "Vergleich: RMSE smoothing-spline; ",
+#         ncol(bindVals),
+#         " Messungen TRPC 4/5/6"
+#       ),
+#       cex = 1,
+#       lwd = 2,
+#       cex.axis = 1.5,
+#       cex.main = 1.5,
+#       cex.lab = 1.5
+#     )
+#     plot(
+#       seq(spar_start, spar_fin, spar_step),
+#       means[1:11],
+#       type = "b",
+#       lty = 1,
+#       ylab = "R²",
+#       xlab = "spar",
+#       main = paste0(
+#         "Vergleich: R² smoothing-spline; ",
+#         ncol(bindVals),
+#         " Messungen TRPC5/6"
+#       ),
+#       cex = 1,
+#       lwd = 2,
+#       cex.axis = 1.5,
+#       cex.main = 1.5,
+#       cex.lab = 1.5
+#     )
+#   }
+#
+#
+#
+#
+#
+#
+# fit_supsmu <- function(v_DataY, v_DataX, span) {
+#   fit <-
+#     supsmu(v_DataX, v_DataY, span = span)
+#   return(fit)
+# }
+#
+#
+# fit_supsmu_tbl <- function(tbl, x_name, y_name, span) {
+#   check_tibble(tbl)
+#   if (!x_name %in% colnames(tbl)) {
+#     stop(paste0(x_name, "not found in tibble"))
+#   }
+#   if (!y_name %in% colnames(tbl)) {
+#     stop(paste0(x_name, "not found in tibble"))
+#   }
+#   check_number(span)
+#   fit <- supsmu(pull(tbl, y_name), pull(tbl, x_name), span)
+#   return(as.numeric(fit$y))
+# }
+#
+#
+#
+# supsmu_fit_test <-
+#   function(tbl, span_start, span_finish, span_step) {
+#     means <- c()
+#     RMSEs <- c()
+#     ftests <- c()
+#     for (i in (seq(span_start, span_finish, span_step))) {
+#       fit <-
+#         fit_supsmu(tbl$normalized_CurrentDensity, tbl$"Potential[V]", i)
+#       rsq__m <- rsq_(fit$y, tbl$normalized_CurrentDensity)
+#       # rsq__ <- create_model_rsq__mean(rsq__m)
+#       RMSE <- rmse(fit$y, tbl$normalized_CurrentDensity)
+#       means <- c(means, rsq__m)
+#       RMSEs <- c(RMSEs, RMSE)
+#       ftest <-
+#         as.numeric(var.test(fit$y, tbl$normalized_CurrentDensity)[3])
+#       ftests <- c(ftests, ftest)
+#       #   png(paste0("mC6_Bef_Outward", i, ".png"))
+#       plot(
+#         tbl$"Potential[V]",
+#         tbl$normalized_CurrentDensity,
+#         type = "l",
+#         main = paste0(
+#           "Degree: ",
+#           i,
+#           ": R² =",
+#           round(rsq__m, 6),
+#           " RMSE  = ",
+#           round(RMSE, 6)
+#         ),
+#         ylab = "normalized Current Density",
+#         xlab = "Potential [V]",
+#         lwd = 2,
+#         cex.axis = 1.5,
+#         cex.main = 1.5,
+#         cex.lab = 1.5
+#       )
+#       lines(
+#         tbl$"Potential[V]",
+#         fit$y,
+#         type = "l",
+#         col = "green",
+#         lwd = 2
+#       )
+#       legend("topleft", c("normed IV", "model"), fill = c("black", "green"))
+#       # dev.off()
+#     }
+#     return(c(means, RMSEs, ftests))
+#   }
+#
+#
+# supsmu_check_plots <-
+#   function(IV_list, spar_start, spar_fin, spar_step) {
+#     vals <-
+#       map_depth(IV_list, 2, supsmu_fit_test, spar_start, spar_fin, spar_step)
+#     flatVals <- flatten(vals)
+#     bindVals <- bind_rows(flatVals)
+#     means <- rowMeans(bindVals)
+#
+#     plot(
+#       seq(spar_start, spar_fin, spar_step),
+#       means[43:63],
+#       type = "b",
+#       lty = 1,
+#       ylab = "P ftest",
+#       xlab = "spar",
+#       main = paste0(
+#         "Vergleich: FTest smoothing-spline; ",
+#         ncol(bindVals),
+#         " Messungen TRPC 4/5/6"
+#       ),
+#       cex = 1,
+#       lwd = 2,
+#       cex.axis = 1.5,
+#       cex.main = 1.5,
+#       cex.lab = 1.5
+#     )
+#     plot(
+#       seq(spar_start, spar_fin, spar_step),
+#       means[22:42],
+#       type = "b",
+#       lty = 1,
+#       ylab = "RMSE",
+#       xlab = "spar",
+#       main = paste0(
+#         "Vergleich: RMSE smoothing-spline; ",
+#         ncol(bindVals),
+#         " Messungen TRPC 4/5/6"
+#       ),
+#       cex = 1,
+#       lwd = 2,
+#       cex.axis = 1.5,
+#       cex.main = 1.5,
+#       cex.lab = 1.5
+#     )
+#     plot(
+#       seq(spar_start, spar_fin, spar_step),
+#       means[1:21],
+#       type = "b",
+#       lty = 1,
+#       ylab = "R²",
+#       xlab = "spar",
+#       main = paste0(
+#         "Vergleich: R² smoothing-spline; ",
+#         ncol(bindVals),
+#         " Messungen TRPC5/6"
+#       ),
+#       cex = 1,
+#       lwd = 2,
+#       cex.axis = 1.5,
+#       cex.main = 1.5,
+#       cex.lab = 1.5
+#     )
+#   }
+#
 
 
 #' Calculates the slope of points given in two vectors (x&y)
@@ -1149,7 +1149,7 @@ detect_grubbs_outlier <- function(tbl, column_name) {
   return(pull(outlier_tbl, "Outlier"))
 }
 
-#' Title
+#' Checks for outliers using a double iterative grubbs test
 #'
 #' @param tbl
 #' @param column_name

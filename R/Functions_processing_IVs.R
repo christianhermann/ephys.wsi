@@ -1,3 +1,6 @@
+####Functions to import and process IVs measured with an HEKA EPC10####
+
+
 #' Imports measurement(containing IVs and a Summarytable)
 #'
 #' @param quickImport

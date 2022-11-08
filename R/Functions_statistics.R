@@ -1,3 +1,6 @@
+####Wrapper functions for statistical tests####
+
+
 #' Wrapper for wilcox.test
 #'
 #' @param vec1

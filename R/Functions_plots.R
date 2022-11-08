@@ -1,3 +1,6 @@
+####Wrapper functions to create pretty plots####
+
+
 #' Creates a matplot showing all IVs of a measurement at once
 #'
 #' @param IV_list A List containing tibbles with IVs

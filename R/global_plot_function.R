@@ -1,6 +1,6 @@
+####The one function to rule all the plots####
 
-
-#' Title
+#' Super huge wrapper to create all avaiable plots!
 #'
 #' @param plot_type
 #' @param IV_list
@@ -928,7 +928,7 @@ create_plot <-
           used_theme = used_theme[[1]],
           legend_seperate = legend_seperate,
           spacer_plot = spacer_plot,
-          overrideYlim = overrideYlim[[2]],
+          overrideYlim = overrideYlim[[3]],
           xlims = c(splitPotential - abs((settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04)), settings_envir$ramp_data[2]),
           xend1 = settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04,
           xends2 = c(splitPotential, settings_envir$ramp_data[2])
@@ -953,7 +953,7 @@ create_plot <-
           used_theme = used_theme,
           spacer_plot = spacer_plot,
           n_spacer = n_spacer,
-          overrideYlim = overrideYlim[[3]],
+          overrideYlim = overrideYlim[[4]],
           ratio_Median_P_plot = ratio_Median_P_plot,
           xlims =  c(settings_envir$ramp_data[1] * 1.04, splitPotential),
           xend1 = settings_envir$ramp_data[1] * 1.04,
@@ -980,7 +980,7 @@ create_plot <-
           used_theme = used_theme,
           spacer_plot = spacer_plot,
           n_spacer = n_spacer,
-          overrideYlim = overrideYlim[[3]],
+          overrideYlim = overrideYlim[[5]],
           ratio_Median_P_plot = ratio_Median_P_plot,
           xlims =  c(splitPotential - abs((settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04)), settings_envir$ramp_data[2]),
           xend1 = settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04,

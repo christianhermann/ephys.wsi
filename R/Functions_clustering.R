@@ -1,4 +1,4 @@
-
+####Functions which can be used to cluster data using DIANA and Kmeans Clustering####
 
 
 #' Prepares data for clustering

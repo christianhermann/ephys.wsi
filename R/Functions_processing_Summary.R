@@ -1,3 +1,6 @@
+####Functions to import and process excel summaries for experiments measured with an HEKA EPC10####
+
+
 #' Imports a summary
 #'
 #' @return
