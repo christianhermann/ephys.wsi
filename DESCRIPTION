@@ -1,6 +1,6 @@
 Package: ephys.WSI
 Title: Analyse, evaluate and create some cool plots using ephys data. Best used together with DetectIVe! 
-Version: 2.1.6
+Version: 2.1.7
 Authors@R: 
     person(given = "Christian",
            family = "Hermann",
