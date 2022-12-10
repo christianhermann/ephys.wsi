@@ -875,6 +875,7 @@ create_paired_p_value_geom <- function(plot_data,
 
   if (Ratio == T) {
     plot_data$col <- word(plot_data$col, -1)
+    plot_data$col <- factor(plot_data$col, levels = unique(plot_data$col))
     stat.test <- plot_data %>%
       group_by(series) %>%
       rstatix::wilcox_test(value ~ col, paired = T, p.adjust.method = "none") %>%
@@ -897,6 +898,7 @@ create_paired_p_value_geom <- function(plot_data,
   if (type == "min") {
     plot_data <- plot_data[[1]]
     plot_data$col <- word(plot_data$col, -1)
+    plot_data$col <- factor(plot_data$col, levels = unique(plot_data$col))
     stat.test <- plot_data %>%
       group_by(series) %>%
       rstatix::wilcox_test(value ~ col, paired = T, p.adjust.method = "none") %>%
@@ -908,6 +910,7 @@ create_paired_p_value_geom <- function(plot_data,
   if (type == "max") {
     plot_data <- plot_data[[2]]
     plot_data$col <- word(plot_data$col, -1)
+    plot_data$col <- factor(plot_data$col, levels = unique(plot_data$col))
     stat.test <- plot_data %>%
       group_by(series) %>%
       rstatix::wilcox_test(value ~ col, paired = T, p.adjust.method = "none") %>%
@@ -1013,6 +1016,7 @@ create_paired_p_stars_geom <- function(plot_data,
 
   if (Ratio == T) {
     plot_data$col <- word(plot_data$col, -1)
+    plot_data$col <- factor(plot_data$col, levels = unique(plot_data$col))
     stat.test <- plot_data %>%
       group_by(series) %>%
       rstatix::wilcox_test(value ~ col, paired = T, p.adjust.method = "none") %>%
@@ -1035,6 +1039,8 @@ create_paired_p_stars_geom <- function(plot_data,
   if (type == "min") {
     plot_data <- plot_data[[1]]
     plot_data$col <- word(plot_data$col, -1)
+    plot_data$col <- factor(plot_data$col, levels = unique(plot_data$col))
+
     stat.test <- plot_data %>%
       group_by(series) %>%
       rstatix::wilcox_test(value ~ col, paired = T, p.adjust.method = "none") %>%
@@ -1046,6 +1052,7 @@ create_paired_p_stars_geom <- function(plot_data,
   if (type == "max") {
     plot_data <- plot_data[[2]]
     plot_data$col <- word(plot_data$col, -1)
+    plot_data$col <- factor(plot_data$col, levels = unique(plot_data$col))
     stat.test <- plot_data %>%
       group_by(series) %>%
       rstatix::wilcox_test(value ~ col, paired = T, p.adjust.method = "none") %>%
