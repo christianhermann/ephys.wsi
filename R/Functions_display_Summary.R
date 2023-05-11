@@ -777,7 +777,7 @@ get_kruskal_values <- function(summary_list, column_list) {
   columns <- map(columns, data.table::transpose)
 
 
-  values <- map_depth(columns, 2, function(cols, summary) {
+  values <- map_depth(columns, 1, function(cols, summary) {
     map2(cols, summary, function(x, y) unlist(y[x]))
   }, summary_list)
 

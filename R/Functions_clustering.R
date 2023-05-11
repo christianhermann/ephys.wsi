@@ -28,8 +28,8 @@ get_clustering_data <-
     if (!is.null(summary_list)) {
       summary_data_long_list <-
         map(map_depth(pmap(flatten(
-          map_depth(column_list, 2, as.list)
-        ), list), 2, list), function(columns, summary_list) {
+          map_depth(column_list, 1, as.list)
+        ), list), 1, list), function(columns, summary_list) {
           export_summary_value_long(summary_list, columns)
         }, summary_list)
       summary_data_long <- bind_cols(summary_data_long_list)

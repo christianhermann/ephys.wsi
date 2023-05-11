@@ -21,7 +21,7 @@ import_summary <- function() {
 #' @examples
 export_IV_offset <- function(IV_list) {
   check_list(IV_list)
-  offset <- map_depth(IV_list, 2, function(IV) {
+  offset <- map_depth(IV_list, 1, function(IV) {
     pull(IV["Offset"])[1]
   })
   offset <- map(offset, flatten_dbl)
@@ -85,7 +85,7 @@ prepare_peak_setup <- function(IV_names) {
     map(map(
       map_depth(
         IV_names,
-        2,
+        1,
         word,
         start = -1,
         sep = "_"
@@ -206,7 +206,7 @@ detect_summary_outlier <- function(summary_list, column_list, peak_list) {
     return(outliers)
   })
 
-  peak_list <- map_depth(peak_list, 2, function(x) x[!str_detect(x, "Bef")])
+  peak_list <- map_depth(peak_list, 1, function(x) x[!str_detect(x, "Bef")])
 
   outlier_list_Ratio <- map2(summary_list, peak_list, function(summary, peaks) map(unlist(peaks), function(peak, summary) detect_grubbs_outlier(summary, paste0("Ratio_", peak)), summary))
 

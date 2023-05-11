@@ -166,17 +166,17 @@ prepare_data <-
     summary_list <- map(summary_list, create_id, "Name")
 
     IV_list <-
-      map_depth(IV_list, 2, function(x) {
+      map_depth(IV_list, 1, function(x) {
         colnames(x) <- str_replace_all(colnames(x), '"', "")
         return(x)
       })
     IV_list <-
-      map_depth(IV_list, 2, rename_column, "I-mon[A]", "CurrentIn[A]")
+      map_depth(IV_list, 1, rename_column, "I-mon[A]", "CurrentIn[A]")
     IV_list <-
-      map_depth(IV_list, 2, rename_column, "Imon[A]", "CurrentIn[A]")
+      map_depth(IV_list, 1, rename_column, "Imon[A]", "CurrentIn[A]")
     IV_list <-
       map_depth(IV_list,
-        2,
+        1,
         rename_column,
         old_name = "Stimulus",
         new_name = "Potential[V]"
@@ -251,7 +251,7 @@ prepare_data <-
       )
 
     IV_list <-
-      map_depth(IV_list, 2, trim_tibble, settings_envir$asc_columns)
+      map_depth(IV_list, 1, trim_tibble, settings_envir$asc_columns)
 
 
     walk2(IV_list, summary_list, function(IV_list, summary_list) {
@@ -280,7 +280,7 @@ prepare_data <-
 #' @examples
 detect_offset <- function(IV_list) {
   IV_offset <-
-    map_depth(IV_list, 2, function(IV) {
+    map_depth(IV_list, 1, function(IV) {
       pull(IV[IV["Potential[V]"] == 0, ]["CurrentIn[A]"])
     })
   IV_list <-
@@ -360,10 +360,10 @@ calculate_current_density <-
 
 
 
-      Inward <- map_depth(IV_list, 2, function(iv) {
+      Inward <- map_depth(IV_list, 1, function(iv) {
         pull(iv["CurrentDensity[pA/pF]"])[which(iv["Potential[V]"] == min(settings_envir$ramp_data)):splitX]
       })
-      Outward <- map_depth(IV_list, 2, function(iv) {
+      Outward <- map_depth(IV_list, 1, function(iv) {
         pull(iv["CurrentDensity[pA/pF]"])[splitX:which(iv["Potential[V]"] == max(settings_envir$ramp_data))]
       })
 
@@ -372,7 +372,7 @@ calculate_current_density <-
       Inward <-
         map_depth(
           Inward,
-          2,
+          1,
           function(Inward, splitX) {
             c(Inward, rep(NA, splitX - 1))
           }, splitX
@@ -381,7 +381,7 @@ calculate_current_density <-
       Outward <-
         map_depth(
           Outward,
-          2,
+          1,
           function(Outward, splitX) {
             c(rep(NA, splitX - 1), Outward)
           }, splitX
@@ -445,7 +445,7 @@ smooth_IVs <-
     IV_fit <-
       map_depth(
         IV_list,
-        2,
+        1,
         fit_smoothing_spline_tbl,
         "Potential[V]",
         "CurrentDensity[pA/pF]",
@@ -493,7 +493,7 @@ calculate_normed_current_density <-
 
       normalized_IV_in <- map_depth(
         IV_list,
-        2,
+        1,
         normalize_data,
         name = "Potential[V]",
         norm_name = "smoothed_CurrentDensity",
@@ -504,7 +504,7 @@ calculate_normed_current_density <-
 
       normalized_IV_out <- map_depth(
         IV_list,
-        2,
+        1,
         normalize_data,
         name = "Potential[V]",
         norm_name = "smoothed_CurrentDensity",
@@ -546,7 +546,7 @@ calculate_normed_current_density <-
       normalized_IV_in <-
         map_depth(
           normalized_IV_in,
-          2,
+          1,
           function(normIV, splitX) {
             c(normIV, rep(NA, splitX - 1))
           }, splitX
@@ -555,7 +555,7 @@ calculate_normed_current_density <-
       normalized_IV_out <-
         map_depth(
           normalized_IV_out,
-          2,
+          1,
           function(normIV, splitX) {
             c(rep(NA, splitX - 1), normIV)
           }, splitX
@@ -595,7 +595,7 @@ calculate_normed_current_density <-
     if (splitFit == FALSE) {
       normalized_IV_in <- map_depth(
         IV_list,
-        2,
+        1,
         normalize_data,
         name = "Potential[V]",
         norm_name = "smoothed_CurrentDensity",
@@ -606,7 +606,7 @@ calculate_normed_current_density <-
 
       normalized_IV_out <- map_depth(
         IV_list,
-        2,
+        1,
         normalize_data,
         name = "Potential[V]",
         norm_name = "smoothed_CurrentDensity",
@@ -618,7 +618,7 @@ calculate_normed_current_density <-
 
       IV_list_in <-
         map_depth(IV_list,
-          2,
+          1,
           trim_measurement_which,
           min(settings_envir$ramp_data),
           0,
@@ -635,7 +635,7 @@ calculate_normed_current_density <-
 
       IV_list_out <-
         map_depth(IV_list,
-          2,
+          1,
           trim_measurement_which,
           0,
           max(settings_envir$ramp_data),
@@ -699,7 +699,7 @@ calculate_model <-
     IV_fit <-
       map_depth(
         IV_list,
-        2,
+        1,
         fit_smoothing_spline_tbl,
         "Potential[V]",
         "normalized_CurrentDensity",
@@ -726,7 +726,7 @@ calculate_model <-
 # {
 #   IV_fit_in <-
 #     map_depth(IV_list_in,
-#               2,
+#               1,
 #               create_glm_mode_tbl,
 #               "Potential[V]",
 #               "normalized_CurrentDensity",
@@ -734,7 +734,7 @@ calculate_model <-
 #
 #   IV_fit_out <-
 #     map_depth(IV_list_out,
-#               2,
+#               1,
 #               create_glm_mode_tbl,
 #               "Potential[V]",
 #               "normalized_CurrentDensity",
@@ -773,7 +773,7 @@ calculate_slope_conductivity <- function(IV_list, splitFit) {
   slope <-
     map_depth(
       IV_list,
-      2,
+      1,
       calculate_slope_tibble,
       "normalized_CurrentDensity",
       "Potential[V]"
@@ -793,7 +793,7 @@ calculate_slope_conductivity <- function(IV_list, splitFit) {
     slopeInward <-
       map_depth(
         IV_list,
-        2,
+        1,
         calculate_slope_tibble,
         "normalized_CurrentDensity_Inward",
         "Potential[V]"
@@ -802,7 +802,7 @@ calculate_slope_conductivity <- function(IV_list, splitFit) {
     slopeOutward <-
       map_depth(
         IV_list,
-        2,
+        1,
         calculate_slope_tibble,
         "normalized_CurrentDensity_Outward",
         "Potential[V]"
@@ -860,13 +860,13 @@ detect_IV_outlier <-
     splitted_IV_names <-
       map2(IV_names, IV_names, split_list_by_pharmacon)
     splitted_IV_tbl <-
-      map_depth(splitted_IV_list, 2, tbl_list_to_column_tbl, outlier_column)
+      map_depth(splitted_IV_list, 1, tbl_list_to_column_tbl, outlier_column)
     splitted_outlier_vec <-
-      map_depth(splitted_IV_tbl, 2, function(tbl) {
+      map_depth(splitted_IV_tbl, 1, function(tbl) {
         apply(tbl, 1, grubbs.flag_results)
       })
     splitted_outlier_vec <-
-      map_depth(splitted_outlier_vec, 2, function(row) {
+      map_depth(splitted_outlier_vec, 1, function(row) {
         rowSums(row, na.rm = T)
       })
     # splitted_outlier_names <- map2(splitted_outlier_vec,splitted_IV_names, function(outliers, names,outlier_treshhold) map2(outliers, names, function(outlier, name,outlier_treshhold) word(name[outlier > outlier_treshhold],1,-2,sep="_"),outlier_treshhold),outlier_treshhold)
@@ -962,13 +962,13 @@ save_IV_list <- function(IV_list, IV_names, sheet_names) {
 change_potential_unit <-
   function(IV_list, old_unit, new_unit, unit_factor) {
     IV_list <-
-      map_depth(IV_list, 2, function(IV_list, old_unit, unit_factor) {
+      map_depth(IV_list, 1, function(IV_list, old_unit, unit_factor) {
         IV_list[[paste0("Potential[", old_unit, "]")]] <-
           IV_list[[paste0("Potential[", old_unit, "]")]] * unit_factor
         return(IV_list)
       }, old_unit, unit_factor)
     IV_list <-
-      map_depth(IV_list, 2, function(IV_list, old_unit, new_unit) {
+      map_depth(IV_list, 1, function(IV_list, old_unit, new_unit) {
         colnames(IV_list)[colnames(IV_list) == paste0("Potential[", old_unit, "]")] <-
           paste0("Potential[", new_unit, "]")
         return(IV_list)
@@ -999,7 +999,7 @@ export_IV_value <-
            position,
            peak_list,
            range) {
-    # column_data <- map_depth(IV_list, 2, function(IV, col)
+    # column_data <- map_depth(IV_list, 1, function(IV, col)
     #   pull(IV[col])[which(position == pull(IV, paste0("Potential[",settings_envir$voltage_unit,"]")))], column)
 
     # IV_list <- map(IV_list, function(IVs) return(IVs[!str_detect(names(IVs), "Bef")]))
@@ -1014,7 +1014,7 @@ export_IV_value <-
       stop("Error: IVs and Names arent aligned")
     }
 
-    column_data <- map_depth(IV_list, 2, function(IV, col) {
+    column_data <- map_depth(IV_list, 1, function(IV, col) {
       mean(pull(IV[col])[c(
         which(position == pull(
           IV, paste0("Potential[", settings_envir$voltage_unit, "]")

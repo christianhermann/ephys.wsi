@@ -488,7 +488,7 @@ glm_model_test <- function(tbl, pstart, pfinish) {
 }
 
 glm_check_plots <- function(IV_list, k_start, k_fin) {
-  vals <- map_depth(IV_list, 2, gam_model_test, k_start, k_fin)
+  vals <- map_depth(IV_list, 1, gam_model_test, k_start, k_fin)
   flatVals <- flatten(vals)
   bindVals <- bind_rows(flatVals)
   means <- rowMeans(bindVals)
@@ -869,7 +869,7 @@ fit_cobs_smoothing_spline_tbl <- function(tbl, x_name, y_name, reversePot) {
 # supsmu_check_plots <-
 #   function(IV_list, spar_start, spar_fin, spar_step) {
 #     vals <-
-#       map_depth(IV_list, 2, supsmu_fit_test, spar_start, spar_fin, spar_step)
+#       map_depth(IV_list, 1, supsmu_fit_test, spar_start, spar_fin, spar_step)
 #     flatVals <- flatten(vals)
 #     bindVals <- bind_rows(flatVals)
 #     means <- rowMeans(bindVals)
