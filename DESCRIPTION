@@ -1,6 +1,6 @@
 Package: ephys.WSI
 Title: Analyse, evaluate and create some cool plots using ephys data. Best used together with DetectIVe! 
-Version: 2.1.8
+Version: 2.1.9
 Authors@R: 
     person(given = "Christian",
            family = "Hermann",
@@ -11,4 +11,4 @@ Description: Read in .asc data from HEKA measurements. Calculate the current den
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
