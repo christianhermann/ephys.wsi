@@ -54,7 +54,7 @@ import_excel_Data <- function(name) {
       x
     })
 
-  excel_data <- map(excel_data, tibble::as.tibble)
+  excel_data <- map(excel_data, tibble::as_tibble)
 
   sheet_names <-
     map_chr(sheet_names, function(sheet) {

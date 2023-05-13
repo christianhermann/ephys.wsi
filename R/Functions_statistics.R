@@ -148,7 +148,7 @@ get_summary_p_values_U_test <- function(summary, columns, paired = F) {
   })
   columns <- map(columns, data.table::transpose)
   p_value_list <-
-    map_depth(columns, 1, function(cols, sum, paired) {
+    map_depth(columns, 2, function(cols, sum, paired) {
       map2(sum, cols, function(s, x, s_o, x_o, paired) {
         U_test_vectors(unlist(s_o[x_o]), unlist(s[x]), paired)
       }, sum[[1]], cols[[1]], paired)
