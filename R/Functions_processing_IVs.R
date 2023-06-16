@@ -175,6 +175,9 @@ prepare_data <-
     IV_list <-
       map_depth(IV_list, 2, rename_column, "Imon[A]", "CurrentIn[A]")
     IV_list <-
+      map_depth(IV_list, 2, rename_column, "Imon1[A]", "CurrentIn[A]")
+
+    IV_list <-
       map_depth(IV_list,
        2,
         rename_column,
@@ -1250,7 +1253,8 @@ process_new_IVs <-
     data_storage_envir$IV_names <- data_envir$IV_names
     data_storage_envir$sheet_names <- data_envir$sheet_names
     data_storage_envir$IV_peaks <- data_envir$IV_peaks
-  }
+    rm(list = ls(data_envir), envir  = data_envir)
+    }
 #' Add a new Measurement; Run through all existing process steps; Add new list to the current existing list
 #'
 #' @param spar
