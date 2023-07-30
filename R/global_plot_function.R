@@ -181,6 +181,13 @@ create_plot <-
                 "fitted_normalized_CurrentDensity_Outward"
               )
           },
+          "smoothed_CurrentDensity" = {
+            column_list <-
+              c(
+                "smoothed_CurrentDensity_Inward",
+                "smoothed_CurrentDensity_Outward"
+              )
+          },
           "CurrentDensity[pA/pF]" = {
             column_list <-
               c(
@@ -303,6 +310,13 @@ create_plot <-
               c(
                 "fitted_normalized_CurrentDensity_Inward",
                 "fitted_normalized_CurrentDensity_Outward"
+              )
+          },
+          "smoothed_CurrentDensity" = {
+            column_list <-
+              c(
+                "smoothed_CurrentDensity_Inward",
+                "smoothed_CurrentDensity_Outward"
               )
           },
           "CurrentDensity[pA/pF]" = {
@@ -445,6 +459,13 @@ create_plot <-
               c(
                 "fitted_normalized_CurrentDensity_Inward",
                 "fitted_normalized_CurrentDensity_Outward"
+              )
+          },
+          "smoothed_CurrentDensity" = {
+            column_list <-
+              c(
+                "smoothed_CurrentDensity_Inward",
+                "smoothed_CurrentDensity_Outward"
               )
           },
           "CurrentDensity[pA/pF]" = {
@@ -592,6 +613,13 @@ create_plot <-
               c(
                 "fitted_normalized_CurrentDensity_Inward",
                 "fitted_normalized_CurrentDensity_Outward"
+              )
+          },
+          "smoothed_CurrentDensity" = {
+            column_list <-
+              c(
+                "smoothed_CurrentDensity_Inward",
+                "smoothed_CurrentDensity_Outward"
               )
           },
           "CurrentDensity[pA/pF]" = {
@@ -872,6 +900,13 @@ create_plot <-
                 c(
                   "fitted_normalized_CurrentDensity_Inward",
                   "fitted_normalized_CurrentDensity_Outward"
+                )
+            },
+            "smoothed_CurrentDensity" = {
+              column_list <-
+                c(
+                  "smoothed_CurrentDensity_Inward",
+                  "smoothed_CurrentDensity_Outward"
                 )
             },
             "CurrentDensity[pA/pF]" = {
