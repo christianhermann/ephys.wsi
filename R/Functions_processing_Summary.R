@@ -191,12 +191,12 @@ calculate_ratio <- function(summary_list, column_list, peak_list) {
 #'
 #' @examples
 detect_summary_outlier <- function(summary_list, column_list, peak_list) {
-  column_list <- map(column_list, function(x) x[!str_detect(x, "Bef")])
+  column_list <- map(column_list, function(x) x[!str_detect(paste(x), "Bef")])
   outlier_list <- map2(summary_list, column_list, function(summary, columns) map(unlist(columns), function(column, summary) detect_grubbs_outlier(summary, paste0("CD_Corrected_", column)), summary))
   outlier_list_iterative <- pmap(list(summary_list, column_list, outlier_list), function(summary, columns, outlier) map(unlist(columns), function(column, summary, outlier) double_iterative_grubbs_outlier(summary, paste0("CD_Corrected_", column), outlier), summary, outlier))
   outlier_list_iterative_new <- NA
   while (!identical(outlier_list_iterative, outlier_list_iterative_new)) {
-    if (!is.na(outlier_list_iterative_new)) outlier_list_iterative <- outlier_list_iterative_new
+    if (!anyNA(outlier_list_iterative_new)) outlier_list_iterative <- outlier_list_iterative_new
     outlier_list_iterative_new <- pmap(list(summary_list, column_list, outlier_list_iterative), function(summary, columns, outlier) map(unlist(columns), function(column, summary, outlier) double_iterative_grubbs_outlier(summary, paste0("CD_Corrected_", column), outlier), summary, outlier))
   }
 
