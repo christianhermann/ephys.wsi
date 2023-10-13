@@ -190,8 +190,10 @@ calculate_ratio <- function(summary_list, column_list, peak_list) {
 #' @export
 #'
 #' @examples
-detect_summary_outlier <- function(summary_list, column_list, peak_list) {
-  column_list <- map(column_list, function(x) x[!str_detect(paste(x), "Bef")])
+detect_summary_outlier <- function(summary_list, column_list, peak_list, rmBef = TRUE) {
+
+  if(rmBef == TRUE)
+    column_list <- map(column_list, function(x) x[!str_detect(paste(x), "Bef")])
   outlier_list <- map2(summary_list, column_list, function(summary, columns) map(unlist(columns), function(column, summary) detect_grubbs_outlier(summary, paste0("CD_Corrected_", column)), summary))
   outlier_list_iterative <- pmap(list(summary_list, column_list, outlier_list), function(summary, columns, outlier) map(unlist(columns), function(column, summary, outlier) double_iterative_grubbs_outlier(summary, paste0("CD_Corrected_", column), outlier), summary, outlier))
   outlier_list_iterative_new <- NA
@@ -333,14 +335,14 @@ export_summary_value_long <- function(summary_list, column_list) {
 #' @export
 #'
 #' @examples
-process_summary <- function() {
+process_summary <- function(...) {
   data_storage_envir$IV_offset <- export_IV_offset(data_storage_envir$IV_list)
   prepare_peak_setup(data_storage_envir$IV_names)
   data_envir$summary_list <- export_offset_to_summary(data_storage_envir$IV_offset, data_storage_envir$summary_list, data_storage_envir$IV_names, data_storage_envir$peak_list)
   data_envir$summary_list <- calculate_summary_current_density(data_envir$summary_list, data_storage_envir$column_list)
   data_envir$summary_list <- calculate_corrected_summary_current_density(data_envir$summary_list, data_storage_envir$column_list, data_storage_envir$peak_list)
   data_envir$summary_list <- calculate_ratio(data_envir$summary_list, data_storage_envir$column_list, data_storage_envir$peak_list)
-  data_envir$summary_list <- detect_summary_outlier(data_envir$summary_list, data_storage_envir$column_list, data_storage_envir$peak_list)
+  data_envir$summary_list <- detect_summary_outlier(data_envir$summary_list, data_storage_envir$column_list, data_storage_envir$peak_list, ...)
   data_envir$summary_statistic_list <- trim_summary_statistic_columns(data_envir$summary_list, data_storage_envir$column_list, data_storage_envir$peak_list)
 }
 
@@ -350,10 +352,10 @@ process_summary <- function() {
 #' @export
 #'
 #' @examples
-process_new_summary <- function() {
+process_new_summary <- function(...) {
   data_list <- import_summary()
   list2env(data_list, data_envir)
-  process_summary()
+  process_summary(...)
   data_storage_envir$summary_list <- data_envir$summary_list
   data_storage_envir$summary_statistic_list <- data_envir$summary_statistic_list
 }
@@ -364,10 +366,10 @@ process_new_summary <- function() {
 #' @export
 #'
 #' @examples
-add_new_processed_summary <- function() {
+add_new_processed_summary <- function(...) {
   data_list <- import_summary()
   list2env(data_list, data_envir)
-  process_summary()
+  process_summary(...)
   data_storage_envir$summary_list <- c(data_storage_envir$summary_list, data_envir$summary_list)
   data_storage_envir$summary_statistic_list <- c(data_storage_envir$summary_list, data_envir$summary_statistic_list)
 }
@@ -392,8 +394,8 @@ expand_processed_summary <- function() {
 #' @export
 #'
 #' @examples
-process_existing_summary <- function() {
-  process_summary()
+process_existing_summary <- function(...) {
+  process_summary(...)
   data_storage_envir$summary_list <- data_envir$summary_list
   data_storage_envir$summary_statistic_list <- data_envir$summary_statistic_list
 }
