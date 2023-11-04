@@ -214,7 +214,7 @@ detect_summary_outlier <- function(summary_list, column_list, peak_list, rmBef =
   outlier_list_Ratio_iterative <- pmap(list(summary_list, peak_list, outlier_list), function(summary, peaks, outlier) map(unlist(peaks), function(peak, summary, outlier) double_iterative_grubbs_outlier(summary, paste0("Ratio_", peak), outlier), summary, outlier))
   outlier_list_Ratio_iterative_new <- NA
   while (!identical(outlier_list_Ratio_iterative, outlier_list_Ratio_iterative_new)) {
-    if (!is.na(outlier_list_Ratio_iterative_new)) outlier_list_Ratio_iterative <- outlier_list_Ratio_iterative_new
+    if (!anyNA(outlier_list_Ratio_iterative_new)) outlier_list_Ratio_iterative <- outlier_list_Ratio_iterative_new
     outlier_list_Ratio_iterative_new <- pmap(list(summary_list, peak_list, outlier_list_Ratio_iterative), function(summary, peaks, outlier) map(unlist(peaks), function(peak, summary, outlier) double_iterative_grubbs_outlier(summary, paste0("Ratio_", peak), outlier), summary, outlier))
   }
 
