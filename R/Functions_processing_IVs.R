@@ -863,13 +863,13 @@ detect_IV_outlier <-
     splitted_IV_names <-
       map2(IV_names, IV_names, split_list_by_pharmacon)
     splitted_IV_tbl <-
-      map_depth(splitted_IV_list, 1, tbl_list_to_column_tbl, outlier_column)
+      map_depth(splitted_IV_list, 2, tbl_list_to_column_tbl, outlier_column)
     splitted_outlier_vec <-
-      map_depth(splitted_IV_tbl, 1, function(tbl) {
+      map_depth(splitted_IV_tbl, 2, function(tbl) {
         apply(tbl, 1, grubbs.flag_results)
       })
     splitted_outlier_vec <-
-      map_depth(splitted_outlier_vec, 1, function(row) {
+      map_depth(splitted_outlier_vec, 2, function(row) {
         rowSums(row, na.rm = T)
       })
     # splitted_outlier_names <- map2(splitted_outlier_vec,splitted_IV_names, function(outliers, names,outlier_treshhold) map2(outliers, names, function(outlier, name,outlier_treshhold) word(name[outlier > outlier_treshhold],1,-2,sep="_"),outlier_treshhold),outlier_treshhold)
@@ -887,7 +887,7 @@ detect_IV_outlier <-
     if (bef == FALSE) {
       outlier_tibble <-
         map(outlier_tibble, function(tbl) {
-          mutate(tbl, is_outlier = rowSums(tbl[-which(colnames(tbl) == "Bef")]) >= outlier_treshhold * length(tbl[-which(colnames(tbl) == "Bef")]))
+          mutate(tbl, is_outlier = tbl[-which(colnames(tbl) == "Bef" | colnames(tbl) == "bef")] >= outlier_treshhold)
         })
     }
     splitted_IV_list <-
@@ -896,6 +896,7 @@ detect_IV_outlier <-
           x[!outlier["is_outlier"]]
         })
       })
+
     splitted_outlier_IV_list <-
       map2(splitted_IV_list, outlier_tibble, function(iv_list, outlier) {
         map(iv_list, function(x) {

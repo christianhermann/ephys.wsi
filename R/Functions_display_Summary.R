@@ -208,7 +208,7 @@ get_ratio_plot_data <- function(summary_list, peak_list) {
 
   summary_data_long <-
     pivot_longer(summary_data_df, -series,
-      "col",
+      names_to = "col",
       values_drop_na = TRUE
     )
 

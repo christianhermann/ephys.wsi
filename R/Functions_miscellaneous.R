@@ -1013,7 +1013,7 @@ check_and_create_folder <- function(directory, folder) {
 tbl_list_to_column_tbl <- function(tbl_list, column) {
   check_list(tbl_list)
   check_string(column)
-  tbl_list <- map(tbl_list, function(x) {
+  tbl_list <- map(tbl_list, \(x) {
     pull(x[column])
   })
   column_tbl <- bind_cols(tbl_list)

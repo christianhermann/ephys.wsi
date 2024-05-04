@@ -272,6 +272,23 @@ deselect_outlier <- function(summary, outlier_column, outliers = TRUE) {
   return(summary)
 }
 
+#' Returns a iv_list without outliers based on a summary
+#'
+#' @param summary_list
+#' @param IV_list
+#' @param peak_list
+#'
+#' @return
+#' @export
+#'
+#' @examples
+deselect_SummaryOutlier_in_IV <- function(summary_list, IV_list, peak_list) {
+
+  outlier <- map(summary_list, \(x) x$Outlier)
+  outlierRep <- map2(outlier, peak_list, \(x,y) rep(x, each =length(y[[1]])))
+  IV_list <- map2(IV_list,outlierRep, \(x,y) x[!y])
+  return(IV_list)
+}
 #' exports values from a summary to long format
 #'
 #' @param summary_list
