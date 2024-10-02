@@ -657,7 +657,7 @@ create_plot <-
             spacer_plot = spacer_plot,
             n_spacer = n_spacer,
             ratio_Median_P_plot = ratio_Median_P_plot,
-            overrideYlim = overrideYlim,
+            overrideYlim = overrideYlim[[1]],
             xlims =  c(settings_envir$ramp_data[1] * 1.04, splitPotential),
             xend1 = settings_envir$ramp_data[1] * 1.04,
             xends2 = c(settings_envir$ramp_data[1], splitPotential),
@@ -683,7 +683,7 @@ create_plot <-
             used_theme = used_theme,
             spacer_plot = spacer_plot,
             n_spacer = n_spacer,
-            overrideYlim = overrideYlim,
+            overrideYlim = overrideYlim[[2]],
             ratio_Median_P_plot = ratio_Median_P_plot,
             xlims = c(splitPotential - abs(
               settings_envir$ramp_data[2] - settings_envir$ramp_data[2] * 1.04
@@ -734,7 +734,7 @@ create_plot <-
             used_theme = used_theme,
             spacer_plot = spacer_plot,
             n_spacer = n_spacer,
-            overrideYlim = overrideYlim,
+            overrideYlim = overrideYlim[[1]],
             ratio_Median_P_plot = ratio_Median_P_plot,
             xlims = c(
               settings_envir$ramp_data[1] * 1.04,
