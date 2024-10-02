@@ -549,7 +549,7 @@ p_plot_axes <-
         xend = xends2[2],
         yend = 0
       )) + scale_y_log10(
-        name = TeX("$\\textit{P}$ $value$"),
+        name = TeX(add_phantom_supersubscript("$\\textit{P}$ $value$")),
         breaks = c(0.05, 0.01, 0.001),
         labels = c(0.05, 0.01, 0.001)
       ) + coord_cartesian(ylim = c(0.0008, 0.05), expand = F)
