@@ -446,8 +446,8 @@ IV_plot_axes_analysis <-
         limits = xlims,
         breaks = pretty_breaks(n = 21),
         minor_breaks = pretty_breaks(n = 41),
-        expand = expansion(mult = c(0.0, 0),
-        labels = signs_format())
+        expand = expansion(mult = c(0.0, 0)),
+        labels = signs_format()
       )
     plot1 <-
       plot1 + geom_segment(aes(
@@ -516,8 +516,8 @@ p_plot_axes <-
           name = name,
           limits = xlims,
           minor_breaks = seq(xends2[1], xends2[2], 10),
-          expand = expansion(mult = c(0, 0),
-          labels = signs_format())
+          expand = expansion(mult = c(0, 0)),
+          labels = signs_format()
         )
     }
     if (name == "") {
