@@ -510,6 +510,7 @@ p_plot_axes <-
            xlims = c(-104, 100),
            xend1 = -104,
            xends2 = c(-100, 100)) {
+
     if (name != "") {
       plot1 <-
         plot1 + scale_x_continuous(

@@ -1786,7 +1786,8 @@ p_plot <-
           limits = xlims,
           minor_breaks = seq(xends2[1], xends2[2], 10),
           expand = c(0, 0),
-          name = paste0("Potential (", settings_envir$voltage_unit, ")")
+          name = paste0("Potential (", settings_envir$voltage_unit, ")"),
+          labels = signs_format()
         )
 
       if (spacer_plot == T) {
@@ -1867,6 +1868,7 @@ p_plot <-
         limits = xlims,
         minor_breaks = seq(xends2[1], xends2[2], 10),
         expand = c(0, 0),
+        labels = signs_format(),
         name = paste0("Potential (", settings_envir$voltage_unit, ")")
       )
 
