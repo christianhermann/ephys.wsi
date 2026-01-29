@@ -823,11 +823,19 @@ create_plot <-
 
         matplot <- matplot + theme(
           axis.title.x = element_blank(),
-          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+          plot.title = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.0, 0), "cm")
         )
+
         medianplot <- medianplot + theme(
           axis.title.x = element_blank(),
-          plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm")
+          plot.title = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.0, 0), "cm")
+        )
+
+
+        pplot <- pplot + theme(
+          plot.margin = unit(c(0.3, 0.5, 0.0, 0), "cm")
         )
 
         legend <- grid.arrange(
@@ -1034,23 +1042,36 @@ create_plot <-
 
         matplot <- matplot + theme(
           axis.title.x = element_blank(),
-          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+          plot.title = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.0, 0), "cm")
         )
         matplotInward2 <- matplotInward2 + theme(
           axis.title.x = element_blank(),
-          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+          plot.title = element_blank(),
+          plot.margin = unit(c(0.05, 0.5, 0.0, 0), "cm")
         )
         medianplotInward <- medianplotInward + theme(
           axis.title.x = element_blank(),
-          plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm")
+          plot.title = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.0, 0), "cm")
         )
         matplotOutward2 <- matplotOutward2 + theme(
           axis.title.x = element_blank(),
-          plot.margin = unit(c(0.4, 0.5, 0.2, 0), "cm")
+          plot.title = element_blank(),
+          plot.margin = unit(c(0.05, 0.5, 0.0, 0), "cm")
         )
         medianplotOutward <- medianplotOutward + theme(
           axis.title.x = element_blank(),
-          plot.margin = unit(c(0.2, 0.5, 0.2, 0), "cm")
+          plot.title = element_blank(),
+          plot.margin = unit(c(0.2, 0.5, 0.0, 0), "cm")
+        )
+
+        pplotInward <- pplotInward + theme(
+          plot.margin = unit(c(0.3, 0.5, 0.0, 0), "cm")
+        )
+
+        pplotOutward <- pplotOutward + theme(
+          plot.margin = unit(c(0.3, 0.5, 0.0, 0), "cm")
         )
 
         layout <- "
