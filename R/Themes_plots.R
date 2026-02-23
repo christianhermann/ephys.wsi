@@ -295,7 +295,7 @@ IV_plot_axes <-
         limits = xlims,
         minor_breaks = seq(xends2[1], xends2[2], 10),
         expand = expansion(mult = c(0.0, 0)),
-        labels = signs_format()
+        labels = signs_format(big.mark = "")
       )
     plot1 <-
       plot1 + geom_segment(aes(
@@ -308,7 +308,7 @@ IV_plot_axes <-
         y = ymin,
         xend = xends2[2],
         yend = ymin
-      )) + scale_y_continuous(labels = signs_format()) + coord_cartesian(ylim = c(ymin, ymax), expand = F)
+      )) + scale_y_continuous(labels = signs_format(big.mark = "")) + coord_cartesian(ylim = c(ymin, ymax), expand = F)
     plot1 <-
       plot1 + geom_line(
         data = data.frame(x = c(xends2[1], xends2[2]), y = 0),
@@ -376,7 +376,7 @@ IV_plot_axes_wo_AxisCross <-
         name = name,
         limits = xlims,
         minor_breaks = seq(xends2[1], xends2[2], 10),
-        labels = signs_format(),
+        labels = signs_format(big.mark = ""),
         expand = expansion(mult = c(0.0, 0))
       )
     plot1 <-
@@ -390,7 +390,7 @@ IV_plot_axes_wo_AxisCross <-
         y = ymin,
         xend = xends2[2],
         yend = ymin
-      )) + scale_y_continuous(labels = signs_format()) + coord_cartesian(ylim = c(ymin, ymax), expand = F)
+      )) + scale_y_continuous(labels = signs_format(big.mark = "")) + coord_cartesian(ylim = c(ymin, ymax), expand = F)
     # plot1 <- plot1 + geom_line(data = data.frame(x = xends2[1]:xends2[2], y = 0),aes(x=x, y = y), color = "grey87")
     # plot1 <- plot1 + geom_line(data = data.frame(x = 0, y = seq(ymin_orig, ymax, 0.1)),aes(x=x, y = y), color = "grey87")
     # plot1$layers <- plot1$layers[c(length(plot1$layers),length(plot1$layers)-1,1:(length(plot1$layers)-2))]
@@ -447,7 +447,7 @@ IV_plot_axes_analysis <-
         breaks = pretty_breaks(n = 21),
         minor_breaks = pretty_breaks(n = 41),
         expand = expansion(mult = c(0.0, 0)),
-        labels = signs_format()
+        labels = signs_format(big.mark = "")
       )
     plot1 <-
       plot1 + geom_segment(aes(
@@ -460,7 +460,7 @@ IV_plot_axes_analysis <-
         y = ymin,
         xend = xends2[2],
         yend = ymin
-      )) + scale_y_continuous(breaks = pretty_breaks(n = 20),labels = signs_format()) + coord_cartesian(ylim = c(ymin, ymax), expand = F)
+      )) + scale_y_continuous(breaks = pretty_breaks(n = 20),labels = signs_format(big.mark = "")) + coord_cartesian(ylim = c(ymin, ymax), expand = F)
     plot1 <-
       plot1 + geom_line(
         data = data.frame(x = -100:100, y = 0),
@@ -518,7 +518,7 @@ p_plot_axes <-
           limits = xlims,
           minor_breaks = seq(xends2[1], xends2[2], 10),
           expand = expansion(mult = c(0, 0)),
-          labels = signs_format()
+          labels = signs_format(big.mark = "")
         )
     }
     if (name == "") {
@@ -528,7 +528,7 @@ p_plot_axes <-
           limits = c(-104, 100),
           minor_breaks = seq(-100, 100, 10),
           expand = expansion(mult = c(0, 0)),
-          labels = signs_format()
+          labels = signs_format(big.mark = "")
         )
     }
     if (labels == F) {
@@ -538,7 +538,7 @@ p_plot_axes <-
           minor_breaks = seq(-100, 100, 10),
           expand = expansion(mult = c(0, 0)),
           labels = c(),
-          labels = signs_format()
+          labels = signs_format(big.mark = "")
         )
     }
     # plot1 <- add_vertical_line_to_plot(plot1,0.05)
@@ -591,7 +591,7 @@ p_plot_axes_analysis <-
           breaks = pretty_breaks(n = 21),
           minor_breaks = seq(-100, 100, 10),
           expand = expansion(mult = c(0, 0)),
-          labels = signs_format()
+          labels = signs_format(big.mark = "")
         )
     }
     if (name == "") {
@@ -602,7 +602,7 @@ p_plot_axes_analysis <-
           breaks = pretty_breaks(n = 21),
           minor_breaks = seq(-100, 100, 10),
           expand = expansion(mult = c(0, 0)),
-          labels = signs_format()
+          labels = signs_format(big.mark = "")
         )
     }
     if (labels == F) {
@@ -613,7 +613,7 @@ p_plot_axes_analysis <-
           minor_breaks = seq(-100, 100, 10),
           expand = expansion(mult = c(0, 0)),
           labels = c(),
-          labels = signs_format()
+          labels = signs_format(big.mark = "")
         )
     }
     # plot1 <- add_vertical_line_to_plot(plot1,0.05)
